@@ -247,8 +247,9 @@ unsigned char ArithmeticDecoder::read_bit()
 {
 	// read in new byte if needed
 	if (cbit == 0) {
-		if (!reader_.read_byte(&bbyte)) // read next byte if available
+		if (!reader_.read_byte(&bbyte)) { // read next byte if available
 			bbyte = 0; // if no more data is left in the stream
+		}
 		cbit = 8;
 	}
 
@@ -369,8 +370,9 @@ void model_s::shift_context(int c)
 {
 	// shifting is not possible if max_order is below 1
 	// or context index is negative
-	if ((max_order < 2) || (c < 0))
+	if ((max_order < 2) || (c < 0)) {
 		return;
+	}
 
 	// shift each orders' context
 	for (int i = max_order; i > 1; i--) {
@@ -631,8 +633,9 @@ void model_b::update_model(int symbol)
 		context->scale++;
 		// if counts for that symbol have gone above the maximum count
 		// the table has to be resized (scale factor 2)
-		if (context->counts[symbol] >= max_count)
+		if (context->counts[symbol] >= max_count) {
 			context->rescale_table();
+		}
 	}
 }
 

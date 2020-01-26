@@ -338,8 +338,9 @@ packJPG by Matthias Stirner, 01/2016
 static inline void *frealloc(void *ptr, size_t size)
 {
 	void *n_ptr = realloc(ptr, (size) ? size : 1);
-	if (n_ptr == nullptr)
+	if (n_ptr == nullptr) {
 		free(ptr);
+	}
 	return n_ptr;
 }
 
@@ -816,11 +817,12 @@ int main(int argc, char **argv)
 			}
 		}
 		// count errors / warnings / file sizes
-		if (errorlevel >= err_tol)
+		if (errorlevel >= err_tol) {
 			error_cnt++;
-		else {
-			if (errorlevel == 1)
+		} else {
+			if (errorlevel == 1) {
 				warn_cnt++;
+			}
 			acc_jpgsize += jpgfilesize;
 			acc_pjgsize += pjgfilesize;
 		}
@@ -1254,8 +1256,9 @@ INTERN void initialize_options(int argc, char **argv)
 
 	// get memory for filelist & preset with NULL
 	filelist = static_cast<char **>(calloc(argc, sizeof(char *)));
-	for (i = 0; i < argc; i++)
+	for (i = 0; i < argc; i++) {
 		filelist[i] = nullptr;
+	}
 
 	// preset temporary filelist pointer
 	tmp_flp = filelist;
@@ -1352,8 +1355,9 @@ INTERN void initialize_options(int argc, char **argv)
 	}
 
 	// count number of files (or filenames) in filelist
-	for (file_cnt = 0; filelist[file_cnt] != nullptr; file_cnt++)
+	for (file_cnt = 0; filelist[file_cnt] != nullptr; file_cnt++) {
 		;
+	}
 
 	// alloc arrays for error messages and types storage
 	err_list = static_cast<char **>(calloc(file_cnt, sizeof(char *)));
@@ -1370,8 +1374,9 @@ INTERN void initialize_options(int argc, char **argv)
 		orig_set[6] = segm_cnt[2];
 		orig_set[7] = segm_cnt[3];
 	} else {
-		for (i = 0; i < 8; i++)
+		for (i = 0; i < 8; i++) {
 			orig_set[i] = 0;
+		}
 	}
 }
 #endif
@@ -1409,17 +1414,18 @@ INTERN void process_ui(void)
 		fprintf(msgout, "\nProcessing file %i of %i \"%s\" -> ",
 			file_no + 1, file_cnt, filelist[file_no]);
 
-		if (verbosity > 1)
+		if (verbosity > 1) {
 			fprintf(msgout,
 				"\n----------------------------------------");
+		}
 
 		// check input file and determine filetype
 		execute(check_file);
 
 		// get specific action message
-		if (filetype == F_UNK)
+		if (filetype == F_UNK) {
 			actionmsg = "unknown filetype";
-		else
+		} else {
 			switch (action) {
 			case A_COMPRESS:
 				actionmsg = (filetype == F_JPG) ?
@@ -1448,9 +1454,11 @@ INTERN void process_ui(void)
 				actionmsg = "Converting";
 				break;
 			}
+		}
 
-		if (verbosity < 2)
+		if (verbosity < 2) {
 			fprintf(msgout, "%s -> ", actionmsg);
+		}
 	} else { // progress bar UI
 		// update progress message
 		fprintf(msgout, "Processing file %2i of %2i ", file_no + 1,
@@ -1474,11 +1482,13 @@ INTERN void process_ui(void)
 	// delete if broken or if output not needed
 	if ((!pipe_on) && ((errorlevel >= err_tol) || (action != A_COMPRESS))) {
 		if (filetype == F_JPG) {
-			if (file_exists(pjgfilename))
+			if (file_exists(pjgfilename)) {
 				remove(pjgfilename);
+			}
 		} else if (filetype == F_PJG) {
-			if (file_exists(jpgfilename))
+			if (file_exists(jpgfilename)) {
 				remove(jpgfilename);
+			}
 		}
 	}
 
@@ -1491,22 +1501,26 @@ INTERN void process_ui(void)
 	cr = (jpgfilesize > 0) ? (100.0 * pjgfilesize / jpgfilesize) : 0;
 
 	if (verbosity >= 0) { // standard UI
-		if (verbosity > 1)
+		if (verbosity > 1) {
 			fprintf(msgout,
 				"\n----------------------------------------");
+		}
 
 		// display success/failure message
 		switch (verbosity) {
 		case 0:
 			if (errorlevel < err_tol) {
-				if (action == A_COMPRESS)
+				if (action == A_COMPRESS) {
 					fprintf(msgout, "%.2f%%", cr);
-				else
+				} else {
 					fprintf(msgout, "DONE");
-			} else
+				}
+			} else {
 				fprintf(msgout, "ERROR");
-			if (errorlevel > 0)
+			}
+			if (errorlevel > 0) {
 				fprintf(msgout, "\n");
+			}
 			break;
 
 		case 1:
@@ -1515,10 +1529,11 @@ INTERN void process_ui(void)
 			break;
 
 		case 2:
-			if (errorlevel < err_tol)
+			if (errorlevel < err_tol) {
 				fprintf(msgout, "\n-> %s OK\n", actionmsg);
-			else
+			} else {
 				fprintf(msgout, "\n-> %s ERROR\n", actionmsg);
+			}
 			break;
 		}
 
@@ -1557,8 +1572,9 @@ INTERN void process_ui(void)
 			}
 			fprintf(msgout, " comp. ratio : %7.2f %%\n", cr);
 		}
-		if ((verbosity > 1) && (action == A_COMPRESS))
+		if ((verbosity > 1) && (action == A_COMPRESS)) {
 			fprintf(msgout, "\n");
+		}
 	} else { // progress bar UI
 		// if this is the last file, update progress bar one last time
 		if (file_no + 1 == file_cnt) {
@@ -1894,8 +1910,10 @@ INTERN void execute(bool (*function)())
 		// write statusmessage
 		if (verbosity == 2) {
 			fprintf(msgout, "\n%s ", get_status(function));
-			for (int i = strlen(get_status(function)); i <= 30; i++)
+			for (int i = strlen(get_status(function)); i <= 30;
+			     i++) {
 				fprintf(msgout, " ");
+			}
 		}
 
 		// set starttime
@@ -1905,21 +1923,24 @@ INTERN void execute(bool (*function)())
 		// set endtime
 		end = clock();
 
-		if ((errorlevel > 0) && (errorfunction == nullptr))
+		if ((errorlevel > 0) && (errorfunction == nullptr)) {
 			errorfunction = function;
+		}
 
 		// write time or failure notice
 		if (success) {
 			total = static_cast<int>(
 				static_cast<double>((end - begin) * 1000) /
 				CLOCKS_PER_SEC);
-			if (verbosity == 2)
+			if (verbosity == 2) {
 				fprintf(msgout, "%6ims",
 					(total >= 0) ? total : -1);
+			}
 		} else {
 			errorfunction = function;
-			if (verbosity == 2)
+			if (verbosity == 2) {
 				fprintf(msgout, "%8s", "ERROR");
+			}
 		}
 #else
 		// call function
@@ -2012,9 +2033,9 @@ INTERN bool check_file(void)
 			return false;
 		}
 		// JPEG specific settings - restore original settings
-		if (orig_set[0] == 0)
+		if (orig_set[0] == 0) {
 			auto_set = true;
-		else {
+		} else {
 			nois_trs[0] = orig_set[0];
 			nois_trs[1] = orig_set[1];
 			nois_trs[2] = orig_set[2];
@@ -2149,18 +2170,24 @@ INTERN bool reset_buffers(void)
 	// -- free buffers --
 
 	// free buffers & set pointers NULL
-	if (hdrdata != nullptr)
+	if (hdrdata != nullptr) {
 		free(hdrdata);
-	if (huffdata != nullptr)
+	}
+	if (huffdata != nullptr) {
 		free(huffdata);
-	if (grbgdata != nullptr)
+	}
+	if (grbgdata != nullptr) {
 		free(grbgdata);
-	if (rst_err != nullptr)
+	}
+	if (rst_err != nullptr) {
 		free(rst_err);
-	if (rstp != nullptr)
+	}
+	if (rstp != nullptr) {
 		free(rstp);
-	if (scnp != nullptr)
+	}
+	if (scnp != nullptr) {
 		free(scnp);
+	}
 	hdrdata = nullptr;
 	huffdata = nullptr;
 	grbgdata = nullptr;
@@ -2170,16 +2197,21 @@ INTERN bool reset_buffers(void)
 
 	// free image arrays
 	for (cmp = 0; cmp < 4; cmp++) {
-		if (zdstdata[cmp] != nullptr)
+		if (zdstdata[cmp] != nullptr) {
 			free(zdstdata[cmp]);
-		if (eobxhigh[cmp] != nullptr)
+		}
+		if (eobxhigh[cmp] != nullptr) {
 			free(eobxhigh[cmp]);
-		if (eobyhigh[cmp] != nullptr)
+		}
+		if (eobyhigh[cmp] != nullptr) {
 			free(eobyhigh[cmp]);
-		if (zdstxlow[cmp] != nullptr)
+		}
+		if (zdstxlow[cmp] != nullptr) {
 			free(zdstxlow[cmp]);
-		if (zdstylow[cmp] != nullptr)
+		}
+		if (zdstylow[cmp] != nullptr) {
 			free(zdstylow[cmp]);
+		}
 		zdstdata[cmp] = nullptr;
 		eobxhigh[cmp] = nullptr;
 		eobyhigh[cmp] = nullptr;
@@ -2188,8 +2220,9 @@ INTERN bool reset_buffers(void)
 		freqscan[cmp] = (unsigned char *)stdscan;
 
 		for (bpos = 0; bpos < 64; bpos++) {
-			if (colldata[cmp][bpos] != nullptr)
+			if (colldata[cmp][bpos] != nullptr) {
 				free(colldata[cmp][bpos]);
+			}
 			colldata[cmp][bpos] = nullptr;
 		}
 	}
@@ -2231,8 +2264,9 @@ INTERN bool reset_buffers(void)
 	for (i = 0; i < 4; i++) {
 		htset[0][i] = 0;
 		htset[1][i] = 0;
-		for (bpos = 0; bpos < 64; bpos++)
+		for (bpos = 0; bpos < 64; bpos++) {
 			qtables[i][bpos] = 0;
+		}
 	}
 
 	// preset jpegtype
@@ -2289,8 +2323,9 @@ INTERN bool read_jpeg(void)
 			crst = 0;
 			while (true) {
 				// read byte from imagedata
-				if (str_in->read_byte(&tmp) == 0)
+				if (str_in->read_byte(&tmp) == 0) {
 					break;
+				}
 
 				// non-0xFF loop
 				if (tmp != 0xFF) {
@@ -2298,15 +2333,17 @@ INTERN bool read_jpeg(void)
 					while (tmp != 0xFF) {
 						huffw->write_byte(tmp);
 						if (str_in->read_byte(&tmp) ==
-						    0)
+						    0) {
 							break;
+						}
 					}
 				}
 
 				// treatment of 0xFF
 				if (tmp == 0xFF) {
-					if (str_in->read_byte(&tmp) == 0)
+					if (str_in->read_byte(&tmp) == 0) {
 						break; // read next byte & check
+					}
 					if (tmp == 0x00) {
 						crst = 0;
 						// no zeroes needed -> ignore 0x00. write 0xFF
@@ -2377,8 +2414,9 @@ INTERN bool read_jpeg(void)
 			}
 		} else {
 			// read in next marker
-			if (str_in->read(segment, 2) != 2)
+			if (str_in->read(segment, 2) != 2) {
 				break;
+			}
 			if (segment[0] != 0xFF) {
 				// ugly fix for incorrect marker segment sizes
 				sprintf(errormessage,
@@ -2387,10 +2425,12 @@ INTERN bool read_jpeg(void)
 				errorlevel = 2;
 				if (type ==
 				    0xFE) { //  if last marker was COM try again
-					if (str_in->read(segment, 2) != 2)
+					if (str_in->read(segment, 2) != 2) {
 						break;
-					if (segment[0] == 0xFF)
+					}
+					if (segment[0] == 0xFF) {
 						errorlevel = 1;
+					}
 				}
 				if (errorlevel == 2) {
 					delete (hdrw);
@@ -2417,11 +2457,13 @@ INTERN bool read_jpeg(void)
 		}
 
 		// read in next segments' length and check it
-		if (str_in->read(segment + 2, 2) != 2)
+		if (str_in->read(segment + 2, 2) != 2) {
 			break;
+		}
 		len = 2 + B_SHORT(segment[2], segment[3]);
-		if (len < 4)
+		if (len < 4) {
 			break;
+		}
 
 		// realloc segment data if needed
 		if (ssize < len) {
@@ -2439,8 +2481,9 @@ INTERN bool read_jpeg(void)
 
 		// read rest of segment, store back in header writer
 		if (str_in->read((segment + 4), (len - 4)) !=
-		    static_cast<unsigned short>(len - 4))
+		    static_cast<unsigned short>(len - 4)) {
 			break;
+		}
 		hdrw->write(segment, len);
 	}
 	// JPEG reader loop end
@@ -2463,8 +2506,9 @@ INTERN bool read_jpeg(void)
 		grbgw->write_byte(tmp);
 		while (true) {
 			len = str_in->read(segment, ssize);
-			if (len == 0)
+			if (len == 0) {
 				break;
+			}
 			grbgw->write(segment, len);
 		}
 		grbgdata = grbgw->get_c_data();
@@ -2513,8 +2557,9 @@ INTERN bool merge_jpeg(void)
 
 		// seek till start-of-scan
 		for (type = 0x00; type != 0xDA;) {
-			if (static_cast<int>(hpos) >= hdrs)
+			if (static_cast<int>(hpos) >= hdrs) {
 				break;
+			}
 			type = hdrdata[hpos + 1];
 			len = 2 + B_SHORT(hdrdata[hpos + 2], hdrdata[hpos + 3]);
 			hpos += len;
@@ -2524,8 +2569,9 @@ INTERN bool merge_jpeg(void)
 		str_out->write(hdrdata + tmp, (hpos - tmp));
 
 		// get out if last marker segment type was not SOS
-		if (type != 0xDA)
+		if (type != 0xDA) {
 			break;
+		}
 
 		// (re)set corrected rst pos
 		cpos = 0;
@@ -2535,8 +2581,9 @@ INTERN bool merge_jpeg(void)
 			// write current byte
 			str_out->write_byte(huffdata[ipos]);
 			// check current byte, stuff if needed
-			if (huffdata[ipos] == 0xFF)
+			if (huffdata[ipos] == 0xFF) {
 				str_out->write_byte(stv);
+			}
 			// insert restart markers if needed
 			if (rstp != nullptr) {
 				if (ipos == rstp[rpos]) {
@@ -2567,8 +2614,9 @@ INTERN bool merge_jpeg(void)
 	str_out->write(EOI, 2);
 
 	// write garbage if needed
-	if (grbs > 0)
+	if (grbs > 0) {
 		str_out->write(grbgdata, grbs);
+	}
 
 	// errormessage if write error
 	if (str_out->error()) {
@@ -2615,8 +2663,9 @@ INTERN bool decode_jpeg(void)
 	while (true) {
 		// seek till start-of-scan, parse only DHT, DRI and SOS
 		for (type = 0x00; type != 0xDA;) {
-			if (static_cast<int>(hpos) >= hdrs)
+			if (static_cast<int>(hpos) >= hdrs) {
 				break;
+			}
 			type = hdrdata[hpos + 1];
 			len = 2 + B_SHORT(hdrdata[hpos + 2], hdrdata[hpos + 3]);
 			if ((type == 0xC4) || (type == 0xDA) ||
@@ -2630,8 +2679,9 @@ INTERN bool decode_jpeg(void)
 		}
 
 		// get out if last marker segment type was not SOS
-		if (type != 0xDA)
+		if (type != 0xDA) {
 			break;
+		}
 
 		// check if huffman tables are available
 		for (csc = 0; csc < cs_cmpc; csc++) {
@@ -2705,18 +2755,20 @@ INTERN bool decode_jpeg(void)
 
 						// copy to colldata
 						for (bpos = 0; bpos < eob;
-						     bpos++)
+						     bpos++) {
 							colldata[cmp][bpos][dpos] =
 								block[bpos];
+						}
 
 						// check for errors, proceed if no error encountered
-						if (eob < 0)
+						if (eob < 0) {
 							sta = -1;
-						else
+						} else {
 							sta = jpg_next_mcupos(
 								&mcu, &cmp,
 								&csc, &sub,
 								&dpos, &rstw);
+						}
 					}
 				} else if (cs_sah == 0) {
 					// ---> progressive interleaved DC decoding <---
@@ -2740,11 +2792,12 @@ INTERN bool decode_jpeg(void)
 							cs_sal;
 
 						// next mcupos if no error happened
-						if (sta != -1)
+						if (sta != -1) {
 							sta = jpg_next_mcupos(
 								&mcu, &cmp,
 								&csc, &sub,
 								&dpos, &rstw);
+						}
 					}
 				} else {
 					// ---> progressive interleaved DC decoding <---
@@ -2759,11 +2812,12 @@ INTERN bool decode_jpeg(void)
 							block[0] << cs_sal;
 
 						// next mcupos if no error happened
-						if (sta != -1)
+						if (sta != -1) {
 							sta = jpg_next_mcupos(
 								&mcu, &cmp,
 								&csc, &sub,
 								&dpos, &rstw);
+						}
 					}
 				}
 			} else // decoding for non interleaved data
@@ -2796,17 +2850,19 @@ INTERN bool decode_jpeg(void)
 
 						// copy to colldata
 						for (bpos = 0; bpos < eob;
-						     bpos++)
+						     bpos++) {
 							colldata[cmp][bpos][dpos] =
 								block[bpos];
+						}
 
 						// check for errors, proceed if no error encountered
-						if (eob < 0)
+						if (eob < 0) {
 							sta = -1;
-						else
+						} else {
 							sta = jpg_next_mcuposn(
 								&cmp, &dpos,
 								&rstw);
+						}
 					}
 				} else if (cs_to == 0) {
 					if (cs_sah == 0) {
@@ -2833,11 +2889,12 @@ INTERN bool decode_jpeg(void)
 								cs_sal;
 
 							// check for errors, increment dpos otherwise
-							if (sta != -1)
+							if (sta != -1) {
 								sta = jpg_next_mcuposn(
 									&cmp,
 									&dpos,
 									&rstw);
+							}
 						}
 					} else {
 						// ---> progressive non interleaved DC decoding <---
@@ -2853,11 +2910,12 @@ INTERN bool decode_jpeg(void)
 								<< cs_sal;
 
 							// check for errors, increment dpos otherwise
-							if (sta != -1)
+							if (sta != -1) {
 								sta = jpg_next_mcuposn(
 									&cmp,
 									&dpos,
 									&rstw);
+							}
 						}
 					}
 				} else {
@@ -2898,36 +2956,41 @@ INTERN bool decode_jpeg(void)
 									peobrun =
 										eobrun;
 									eobrun--;
-								} else
+								} else {
 									peobrun =
 										0;
+								}
 
 								// copy to colldata
 								for (bpos = cs_from;
 								     bpos < eob;
-								     bpos++)
+								     bpos++) {
 									colldata[cmp][bpos][dpos] =
 										block[bpos]
 										<< cs_sal;
-							} else
+								}
+							} else {
 								eobrun--;
+							}
 
 							// check for errors
-							if (eob < 0)
+							if (eob < 0) {
 								sta = -1;
-							else
+							} else {
 								sta = jpg_skip_eobrun(
 									&cmp,
 									&dpos,
 									&rstw,
 									&eobrun);
+							}
 
 							// proceed only if no error encountered
-							if (sta == 0)
+							if (sta == 0) {
 								sta = jpg_next_mcuposn(
 									&cmp,
 									&dpos,
 									&rstw);
+							}
 						}
 					} else {
 						// ---> progressive non interleaved AC decoding <---
@@ -2936,11 +2999,12 @@ INTERN bool decode_jpeg(void)
 							// copy from colldata
 							for (bpos = cs_from;
 							     bpos <= cs_to;
-							     bpos++)
+							     bpos++) {
 								block[bpos] = colldata
 									[cmp]
 									[bpos]
 									[dpos];
+							}
 
 							if (eobrun == 0) {
 								// decode block (long routine)
@@ -2977,9 +3041,10 @@ INTERN bool decode_jpeg(void)
 									peobrun =
 										eobrun;
 									eobrun--;
-								} else
+								} else {
 									peobrun =
 										0;
+								}
 							} else {
 								// decode block (short routine)
 								eob = jpg_decode_eobrun_sa(
@@ -2994,21 +3059,23 @@ INTERN bool decode_jpeg(void)
 							// copy back to colldata
 							for (bpos = cs_from;
 							     bpos <= cs_to;
-							     bpos++)
+							     bpos++) {
 								colldata[cmp]
 									[bpos]
 									[dpos] +=
 									block[bpos]
 									<< cs_sal;
+							}
 
 							// proceed only if no error encountered
-							if (eob < 0)
+							if (eob < 0) {
 								sta = -1;
-							else
+							} else {
 								sta = jpg_next_mcuposn(
 									&cmp,
 									&dpos,
 									&rstw);
+							}
 						}
 					}
 				}
@@ -3098,8 +3165,9 @@ INTERN bool recode_jpeg(void)
 	while (true) {
 		// seek till start-of-scan, parse only DHT, DRI and SOS
 		for (type = 0x00; type != 0xDA;) {
-			if (static_cast<int>(hpos) >= hdrs)
+			if (static_cast<int>(hpos) >= hdrs) {
 				break;
+			}
 			type = hdrdata[hpos + 1];
 			len = 2 + B_SHORT(hdrdata[hpos + 2], hdrdata[hpos + 3]);
 			if ((type == 0xC4) || (type == 0xDA) ||
@@ -3116,16 +3184,18 @@ INTERN bool recode_jpeg(void)
 		}
 
 		// get out if last marker segment type was not SOS
-		if (type != 0xDA)
+		if (type != 0xDA) {
 			break;
+		}
 
 		// (re)alloc scan positons array
-		if (scnp == nullptr)
+		if (scnp == nullptr) {
 			scnp = static_cast<unsigned int *>(
 				calloc(scnc + 2, sizeof(int)));
-		else
+		} else {
 			scnp = static_cast<unsigned int *>(
 				frealloc(scnp, (scnc + 2) * sizeof(int)));
+		}
 		if (scnp == nullptr) {
 			sprintf(errormessage, MEM_ERRMSG);
 			errorlevel = 2;
@@ -3137,12 +3207,13 @@ INTERN bool recode_jpeg(void)
 			tmp = rstc + ((cs_cmpc > 1) ?
 					      (mcuc / rsti) :
 					      (cmpnfo[cs_cmp[0]].bc / rsti));
-			if (rstp == nullptr)
+			if (rstp == nullptr) {
 				rstp = static_cast<unsigned int *>(
 					calloc(tmp + 1, sizeof(int)));
-			else
+			} else {
 				rstp = static_cast<unsigned int *>(frealloc(
 					rstp, (tmp + 1) * sizeof(int)));
+			}
 			if (rstp == nullptr) {
 				sprintf(errormessage, MEM_ERRMSG);
 				errorlevel = 2;
@@ -3184,11 +3255,12 @@ INTERN bool recode_jpeg(void)
 					while (sta == 0) {
 						// copy from colldata
 						for (bpos = 0; bpos < 64;
-						     bpos++)
+						     bpos++) {
 							block[bpos] =
 								colldata[cmp]
 									[bpos]
 									[dpos];
+						}
 
 						// diff coding for dc
 						block[0] -= lastdc[cmp];
@@ -3207,13 +3279,14 @@ INTERN bool recode_jpeg(void)
 							block);
 
 						// check for errors, proceed if no error encountered
-						if (eob < 0)
+						if (eob < 0) {
 							sta = -1;
-						else
+						} else {
 							sta = jpg_next_mcupos(
 								&mcu, &cmp,
 								&csc, &sub,
 								&dpos, &rstw);
+						}
 					}
 				} else if (cs_sah == 0) {
 					// ---> progressive interleaved DC encoding <---
@@ -3234,11 +3307,12 @@ INTERN bool recode_jpeg(void)
 							block);
 
 						// next mcupos if no error happened
-						if (sta != -1)
+						if (sta != -1) {
 							sta = jpg_next_mcupos(
 								&mcu, &cmp,
 								&csc, &sub,
 								&dpos, &rstw);
+						}
 					}
 				} else {
 					// ---> progressive interleaved DC encoding <---
@@ -3254,11 +3328,12 @@ INTERN bool recode_jpeg(void)
 							huffw, block);
 
 						// next mcupos if no error happened
-						if (sta != -1)
+						if (sta != -1) {
 							sta = jpg_next_mcupos(
 								&mcu, &cmp,
 								&csc, &sub,
 								&dpos, &rstw);
+						}
 					}
 				}
 			} else // encoding for non interleaved data
@@ -3268,11 +3343,12 @@ INTERN bool recode_jpeg(void)
 					while (sta == 0) {
 						// copy from colldata
 						for (bpos = 0; bpos < 64;
-						     bpos++)
+						     bpos++) {
 							block[bpos] =
 								colldata[cmp]
 									[bpos]
 									[dpos];
+						}
 
 						// diff coding for dc
 						block[0] -= lastdc[cmp];
@@ -3291,12 +3367,13 @@ INTERN bool recode_jpeg(void)
 							block);
 
 						// check for errors, proceed if no error encountered
-						if (eob < 0)
+						if (eob < 0) {
 							sta = -1;
-						else
+						} else {
 							sta = jpg_next_mcuposn(
 								&cmp, &dpos,
 								&rstw);
+						}
 					}
 				} else if (cs_to == 0) {
 					if (cs_sah == 0) {
@@ -3320,11 +3397,12 @@ INTERN bool recode_jpeg(void)
 								block);
 
 							// check for errors, increment dpos otherwise
-							if (sta != -1)
+							if (sta != -1) {
 								sta = jpg_next_mcuposn(
 									&cmp,
 									&dpos,
 									&rstw);
+							}
 						}
 					} else {
 						// ---> progressive non interleaved DC encoding <---
@@ -3341,11 +3419,12 @@ INTERN bool recode_jpeg(void)
 								huffw, block);
 
 							// next mcupos if no error happened
-							if (sta != -1)
+							if (sta != -1) {
 								sta = jpg_next_mcuposn(
 									&cmp,
 									&dpos,
 									&rstw);
+							}
 						}
 					}
 				} else {
@@ -3356,12 +3435,13 @@ INTERN bool recode_jpeg(void)
 							// copy from colldata
 							for (bpos = cs_from;
 							     bpos <= cs_to;
-							     bpos++)
+							     bpos++) {
 								block[bpos] = FDIV2(
 									colldata[cmp]
 										[bpos]
 										[dpos],
 									cs_sal);
+							}
 
 							// encode block
 							eob = jpg_encode_ac_prg_fs(
@@ -3373,13 +3453,14 @@ INTERN bool recode_jpeg(void)
 								cs_from, cs_to);
 
 							// check for errors, proceed if no error encountered
-							if (eob < 0)
+							if (eob < 0) {
 								sta = -1;
-							else
+							} else {
 								sta = jpg_next_mcuposn(
 									&cmp,
 									&dpos,
 									&rstw);
+							}
 						}
 
 						// encode remaining eobrun
@@ -3396,12 +3477,13 @@ INTERN bool recode_jpeg(void)
 							// copy from colldata
 							for (bpos = cs_from;
 							     bpos <= cs_to;
-							     bpos++)
+							     bpos++) {
 								block[bpos] = FDIV2(
 									colldata[cmp]
 										[bpos]
 										[dpos],
 									cs_sal);
+							}
 
 							// encode block
 							eob = jpg_encode_ac_prg_sa(
@@ -3413,13 +3495,14 @@ INTERN bool recode_jpeg(void)
 								cs_from, cs_to);
 
 							// check for errors, proceed if no error encountered
-							if (eob < 0)
+							if (eob < 0) {
 								sta = -1;
-							else
+							} else {
 								sta = jpg_next_mcuposn(
 									&cmp,
 									&dpos,
 									&rstw);
+							}
 						}
 
 						// encode remaining eobrun
@@ -3455,9 +3538,10 @@ INTERN bool recode_jpeg(void)
 			}
 
 			if (sta == 1) { // status 1 means restart
-				if (rsti > 0) // store rstp & stay in the loop
+				if (rsti > 0) { // store rstp & stay in the loop
 					rstp[rstc++] =
 						huffw->num_bytes_written() - 1;
+				}
 			}
 		}
 	}
@@ -3469,8 +3553,9 @@ INTERN bool recode_jpeg(void)
 
 	// store last scan & restart positions
 	scnp[scnc] = hufs;
-	if (rstp != nullptr)
+	if (rstp != nullptr) {
 		rstp[rstc] = hufs;
+	}
 
 	return true;
 }
@@ -3490,21 +3575,25 @@ INTERN bool adapt_icos(void)
 		for (ipos = 0; ipos < 64; ipos++) {
 			quant[ipos] = QUANT(cmp, zigzag[ipos]);
 			if (quant[ipos] >=
-			    2048) // if this is true, it can be safely assumed (for 8 bit JPEG), that all coefficients are zero
+			    2048) { // if this is true, it can be safely assumed (for 8 bit JPEG), that all coefficients are zero
 				quant[ipos] = 0;
+			}
 		}
 		// adapt idct 8x8 table
-		for (ipos = 0; ipos < 64 * 64; ipos++)
+		for (ipos = 0; ipos < 64 * 64; ipos++) {
 			adpt_idct_8x8[cmp][ipos] =
 				icos_idct_8x8[ipos] * quant[ipos % 64];
+		}
 		// adapt idct 1x8 table
-		for (ipos = 0; ipos < 8 * 8; ipos++)
+		for (ipos = 0; ipos < 8 * 8; ipos++) {
 			adpt_idct_1x8[cmp][ipos] =
 				icos_idct_1x8[ipos] * quant[(ipos % 8) * 8];
+		}
 		// adapt idct 8x1 table
-		for (ipos = 0; ipos < 8 * 8; ipos++)
+		for (ipos = 0; ipos < 8 * 8; ipos++) {
 			adpt_idct_8x1[cmp][ipos] =
 				icos_idct_1x8[ipos] * quant[ipos % 8];
+		}
 	}
 
 	return true;
@@ -3538,10 +3627,11 @@ INTERN bool predict_dc(void)
 #endif
 
 			// fix range
-			if ((*coef) > absmaxp)
+			if ((*coef) > absmaxp) {
 				(*coef) -= corr_f;
-			else if ((*coef) < absmaxn)
+			} else if ((*coef) < absmaxn) {
 				(*coef) += corr_f;
+			}
 		}
 	}
 
@@ -3577,10 +3667,11 @@ INTERN bool unpredict_dc(void)
 #endif
 
 			// fix range
-			if ((*coef) > absmaxp)
+			if ((*coef) > absmaxp) {
 				(*coef) -= corr_f;
-			else if ((*coef) < absmaxn)
+			} else if ((*coef) < absmaxn) {
 				(*coef) += corr_f;
+			}
 		}
 	}
 
@@ -3600,7 +3691,7 @@ INTERN bool check_value_range(void)
 	for (cmp = 0; cmp < cmpc; cmp++) {
 		for (bpos = 0; bpos < 64; bpos++) {
 			absmax = MAX_V(cmp, bpos);
-			for (dpos = 0; dpos < cmpnfo[cmp].bc; dpos++)
+			for (dpos = 0; dpos < cmpnfo[cmp].bc; dpos++) {
 				if ((colldata[cmp][bpos][dpos] > absmax) ||
 				    (colldata[cmp][bpos][dpos] < -absmax)) {
 					sprintf(errormessage,
@@ -3611,6 +3702,7 @@ INTERN bool check_value_range(void)
 					errorlevel = 2;
 					return false;
 				}
+			}
 		}
 	}
 
@@ -3636,17 +3728,23 @@ INTERN bool calc_zdst_lists(void)
 			b_x = unzigzag[bpos] % 8;
 			b_y = unzigzag[bpos] / 8;
 			if (b_x == 0) {
-				for (dpos = 0; dpos < cmpnfo[cmp].bc; dpos++)
-					if (colldata[cmp][bpos][dpos] != 0)
+				for (dpos = 0; dpos < cmpnfo[cmp].bc; dpos++) {
+					if (colldata[cmp][bpos][dpos] != 0) {
 						zdstylow[cmp][dpos]++;
+					}
+				}
 			} else if (b_y == 0) {
-				for (dpos = 0; dpos < cmpnfo[cmp].bc; dpos++)
-					if (colldata[cmp][bpos][dpos] != 0)
+				for (dpos = 0; dpos < cmpnfo[cmp].bc; dpos++) {
+					if (colldata[cmp][bpos][dpos] != 0) {
 						zdstxlow[cmp][dpos]++;
+					}
+				}
 			} else {
-				for (dpos = 0; dpos < cmpnfo[cmp].bc; dpos++)
-					if (colldata[cmp][bpos][dpos] != 0)
+				for (dpos = 0; dpos < cmpnfo[cmp].bc; dpos++) {
+					if (colldata[cmp][bpos][dpos] != 0) {
 						zdstdata[cmp][dpos]++;
+					}
+				}
 			}
 		}
 	}
@@ -3685,20 +3783,25 @@ INTERN bool pack_pjg(void)
 	auto encoder = new ArithmeticEncoder(*str_out);
 
 	// discard meta information from header if option set
-	if (disc_meta)
-		if (!jpg_rebuild_header())
+	if (disc_meta) {
+		if (!jpg_rebuild_header()) {
 			return false;
+		}
+	}
 	// optimize header for compression
-	if (!pjg_optimize_header())
+	if (!pjg_optimize_header()) {
 		return false;
+	}
 	// set padbit to 1 if previously unset
-	if (padbit == -1)
+	if (padbit == -1) {
 		padbit = 1;
+	}
 
 // encode JPG header
 #if !defined(DEV_INFOS)
-	if (!pjg_encode_generic(encoder, hdrdata, hdrs))
+	if (!pjg_encode_generic(encoder, hdrdata, hdrs)) {
 		return false;
+	}
 #else
 	dev_size = str_out->getpos();
 	if (!pjg_encode_generic(encoder, hdrdata, hdrs))
@@ -3706,37 +3809,47 @@ INTERN bool pack_pjg(void)
 	dev_size_hdr += str_out->getpos() - dev_size;
 #endif
 	// store padbit (padbit can't be retrieved from the header)
-	if (!pjg_encode_bit(encoder, padbit))
+	if (!pjg_encode_bit(encoder, padbit)) {
 		return false;
+	}
 	// also encode one bit to signal false/correct use of RST markers
-	if (!pjg_encode_bit(encoder, (rst_err == nullptr) ? 0 : 1))
+	if (!pjg_encode_bit(encoder, (rst_err == nullptr) ? 0 : 1)) {
 		return false;
+	}
 	// encode # of false set RST markers per scan
-	if (rst_err != nullptr)
-		if (!pjg_encode_generic(encoder, rst_err, scnc))
+	if (rst_err != nullptr) {
+		if (!pjg_encode_generic(encoder, rst_err, scnc)) {
 			return false;
+		}
+	}
 
 	// encode actual components data
 	for (cmp = 0; cmp < cmpc; cmp++) {
 #if !defined(DEV_INFOS)
 		// encode frequency scan ('zero-sort-scan')
-		if (!pjg_encode_zstscan(encoder, cmp))
+		if (!pjg_encode_zstscan(encoder, cmp)) {
 			return false;
+		}
 		// encode zero-distribution-lists for higher (7x7) ACs
-		if (!pjg_encode_zdst_high(encoder, cmp))
+		if (!pjg_encode_zdst_high(encoder, cmp)) {
 			return false;
+		}
 		// encode coefficients for higher (7x7) ACs
-		if (!pjg_encode_ac_high(encoder, cmp))
+		if (!pjg_encode_ac_high(encoder, cmp)) {
 			return false;
+		}
 		// encode zero-distribution-lists for lower ACs
-		if (!pjg_encode_zdst_low(encoder, cmp))
+		if (!pjg_encode_zdst_low(encoder, cmp)) {
 			return false;
+		}
 		// encode coefficients for first row / collumn ACs
-		if (!pjg_encode_ac_low(encoder, cmp))
+		if (!pjg_encode_ac_low(encoder, cmp)) {
 			return false;
+		}
 		// encode coefficients for DC
-		if (!pjg_encode_dc(encoder, cmp))
+		if (!pjg_encode_dc(encoder, cmp)) {
 			return false;
+		}
 #else
 		dev_size = str_out->getpos();
 		// encode frequency scan ('zero-sort-scan')
@@ -3775,12 +3888,15 @@ INTERN bool pack_pjg(void)
 	}
 
 	// encode checkbit for garbage (0 if no garbage, 1 if garbage has to be coded)
-	if (!pjg_encode_bit(encoder, (grbs > 0) ? 1 : 0))
+	if (!pjg_encode_bit(encoder, (grbs > 0) ? 1 : 0)) {
 		return false;
+	}
 	// encode garbage data only if needed
-	if (grbs > 0)
-		if (!pjg_encode_generic(encoder, grbgdata, grbs))
+	if (grbs > 0) {
+		if (!pjg_encode_generic(encoder, grbgdata, grbs)) {
 			return false;
+		}
+	}
 
 	// finalize arithmetic compression
 	delete (encoder);
@@ -3839,63 +3955,79 @@ INTERN bool unpack_pjg(void)
 	auto decoder = new ArithmeticDecoder(*str_in);
 
 	// decode JPG header
-	if (!pjg_decode_generic(decoder, &hdrdata, &hdrs))
+	if (!pjg_decode_generic(decoder, &hdrdata, &hdrs)) {
 		return false;
+	}
 	// retrieve padbit from stream
 	if (!pjg_decode_bit(decoder, &cb)) {
 		return false;
 	}
 	padbit = cb;
 	// decode one bit that signals false /correct use of RST markers
-	if (!pjg_decode_bit(decoder, &cb))
+	if (!pjg_decode_bit(decoder, &cb)) {
 		return false;
+	}
 	// decode # of false set RST markers per scan only if available
-	if (cb == 1)
-		if (!pjg_decode_generic(decoder, &rst_err, nullptr))
+	if (cb == 1) {
+		if (!pjg_decode_generic(decoder, &rst_err, nullptr)) {
 			return false;
+		}
+	}
 
 	// undo header optimizations
-	if (!pjg_unoptimize_header())
+	if (!pjg_unoptimize_header()) {
 		return false;
+	}
 	// discard meta information from header if option set
-	if (disc_meta)
-		if (!jpg_rebuild_header())
+	if (disc_meta) {
+		if (!jpg_rebuild_header()) {
 			return false;
+		}
+	}
 	// parse header for image-info
-	if (!jpg_setup_imginfo())
+	if (!jpg_setup_imginfo()) {
 		return false;
+	}
 
 	// decode actual components data
 	for (cmp = 0; cmp < cmpc; cmp++) {
 		// decode frequency scan ('zero-sort-scan')
-		if (!pjg_decode_zstscan(decoder, cmp))
+		if (!pjg_decode_zstscan(decoder, cmp)) {
 			return false;
+		}
 		// decode zero-distribution-lists for higher (7x7) ACs
-		if (!pjg_decode_zdst_high(decoder, cmp))
+		if (!pjg_decode_zdst_high(decoder, cmp)) {
 			return false;
+		}
 		// decode coefficients for higher (7x7) ACs
-		if (!pjg_decode_ac_high(decoder, cmp))
+		if (!pjg_decode_ac_high(decoder, cmp)) {
 			return false;
+		}
 		// decode zero-distribution-lists for lower ACs
-		if (!pjg_decode_zdst_low(decoder, cmp))
+		if (!pjg_decode_zdst_low(decoder, cmp)) {
 			return false;
+		}
 		// decode coefficients for first row / collumn ACs
-		if (!pjg_decode_ac_low(decoder, cmp))
+		if (!pjg_decode_ac_low(decoder, cmp)) {
 			return false;
+		}
 		// decode coefficients for DC
-		if (!pjg_decode_dc(decoder, cmp))
+		if (!pjg_decode_dc(decoder, cmp)) {
 			return false;
+		}
 	}
 
 	// retrieve checkbit for garbage (0 if no garbage, 1 if garbage has to be coded)
-	if (!pjg_decode_bit(decoder, &cb))
+	if (!pjg_decode_bit(decoder, &cb)) {
 		return false;
+	}
 
 	// decode garbage data only if available
-	if (cb == 0)
+	if (cb == 0) {
 		grbs = 0;
-	else if (!pjg_decode_generic(decoder, &grbgdata, &grbs))
+	} else if (!pjg_decode_generic(decoder, &grbgdata, &grbs)) {
 		return false;
+	}
 
 	// finalize arithmetic compression
 	delete (decoder);
@@ -3928,8 +4060,9 @@ INTERN bool jpg_setup_imginfo(void)
 		len = 2 + B_SHORT(hdrdata[hpos + 2], hdrdata[hpos + 3]);
 		// do not parse DHT & DRI
 		if ((type != 0xDA) && (type != 0xC4) && (type != 0xDD)) {
-			if (!jpg_parse_jfif(type, len, &(hdrdata[hpos])))
+			if (!jpg_parse_jfif(type, len, &(hdrdata[hpos]))) {
 				return false;
+			}
 		}
 		hpos += len;
 	}
@@ -3953,10 +4086,12 @@ INTERN bool jpg_setup_imginfo(void)
 
 	// do all remaining component info calculations
 	for (cmp = 0; cmp < cmpc; cmp++) {
-		if (cmpnfo[cmp].sfh > sfhm)
+		if (cmpnfo[cmp].sfh > sfhm) {
 			sfhm = cmpnfo[cmp].sfh;
-		if (cmpnfo[cmp].sfv > sfvm)
+		}
+		if (cmpnfo[cmp].sfv > sfvm) {
 			sfvm = cmpnfo[cmp].sfv;
+		}
 	}
 	mcuv = static_cast<int>(std::ceil(static_cast<float>(imgheight) /
 					  static_cast<float>(8 * sfhm)));
@@ -3979,11 +4114,13 @@ INTERN bool jpg_setup_imginfo(void)
 
 	// decide components' statistical ids
 	if (cmpc <= 3) {
-		for (cmp = 0; cmp < cmpc; cmp++)
+		for (cmp = 0; cmp < cmpc; cmp++) {
 			cmpnfo[cmp].sid = cmp;
+		}
 	} else {
-		for (cmp = 0; cmp < cmpc; cmp++)
+		for (cmp = 0; cmp < cmpc; cmp++) {
 			cmpnfo[cmp].sid = 0;
+		}
 	}
 
 	// alloc memory for further operations
@@ -4024,8 +4161,9 @@ INTERN bool jpg_setup_imginfo(void)
 		for (cmp = 0; cmp < cmpc; cmp++) {
 			for (i = 0; conf_sets[i][cmpnfo[cmp].sid] >
 				    static_cast<unsigned int>(cmpnfo[cmp].bc);
-			     i++)
+			     i++) {
 				;
+			}
 			segm_cnt[cmp] = conf_segm[i][cmpnfo[cmp].sid];
 			nois_trs[cmp] = conf_ntrs[i][cmpnfo[cmp].sid];
 		}
@@ -4054,8 +4192,9 @@ INTERN bool jpg_parse_jfif(unsigned char type, unsigned int len,
 			lval = LBITS(segment[hpos], 4);
 			rval = RBITS(segment[hpos], 4);
 			if (((lval < 0) || (lval >= 2)) ||
-			    ((rval < 0) || (rval >= 4)))
+			    ((rval < 0) || (rval >= 4))) {
 				break;
+			}
 
 			hpos++;
 			// build huffman codes & trees
@@ -4066,8 +4205,9 @@ INTERN bool jpg_parse_jfif(unsigned char type, unsigned int len,
 			htset[lval][rval] = 1;
 
 			skip = 16;
-			for (i = 0; i < 16; i++)
+			for (i = 0; i < 16; i++) {
 				skip += static_cast<int>(segment[hpos + i]);
+			}
 			hpos += skip;
 		}
 
@@ -4084,18 +4224,21 @@ INTERN bool jpg_parse_jfif(unsigned char type, unsigned int len,
 		while (hpos < len) {
 			lval = LBITS(segment[hpos], 4);
 			rval = RBITS(segment[hpos], 4);
-			if ((lval < 0) || (lval >= 2))
+			if ((lval < 0) || (lval >= 2)) {
 				break;
-			if ((rval < 0) || (rval >= 4))
+			}
+			if ((rval < 0) || (rval >= 4)) {
 				break;
+			}
 			hpos++;
 			if (lval == 0) { // 8 bit precision
 				for (i = 0; i < 64; i++) {
 					qtables[rval][i] =
 						static_cast<unsigned short>(
 							segment[hpos + i]);
-					if (qtables[rval][i] == 0)
+					if (qtables[rval][i] == 0) {
 						break;
+					}
 				}
 				hpos += 64;
 			} else { // 16 bit precision
@@ -4103,8 +4246,9 @@ INTERN bool jpg_parse_jfif(unsigned char type, unsigned int len,
 					qtables[rval][i] = B_SHORT(
 						segment[hpos + (2 * i)],
 						segment[hpos + (2 * i) + 1]);
-					if (qtables[rval][i] == 0)
+					if (qtables[rval][i] == 0) {
 						break;
+					}
 				}
 				hpos += 128;
 			}
@@ -4137,8 +4281,9 @@ INTERN bool jpg_parse_jfif(unsigned char type, unsigned int len,
 		for (i = 0; i < cs_cmpc; i++) {
 			for (cmp = 0;
 			     (segment[hpos] != cmpnfo[cmp].jid) && (cmp < cmpc);
-			     cmp++)
+			     cmp++) {
 				;
+			}
 			if (cmp == cmpc) {
 				sprintf(errormessage,
 					"component id mismatch in start-of-scan");
@@ -4188,10 +4333,11 @@ INTERN bool jpg_parse_jfif(unsigned char type, unsigned int len,
 		// coding process: progressive DCT
 
 		// set JPEG coding type
-		if (type == 0xC2)
+		if (type == 0xC2) {
 			jpegtype = 2;
-		else
+		} else {
 			jpegtype = 1;
+		}
 
 		// check data precision, only 8 bit is allowed
 		lval = segment[hpos];
@@ -4407,8 +4553,9 @@ INTERN int jpg_decode_block_seq(BitReader *huffr, huffTree *dctree,
 
 	// decode dc
 	hc = jpg_next_huffcode(huffr, dctree);
-	if (hc < 0)
+	if (hc < 0) {
 		return -1; // return error
+	}
 
 	s = static_cast<unsigned char>(hc);
 	n = huffr->read(s);
@@ -4423,8 +4570,9 @@ INTERN int jpg_decode_block_seq(BitReader *huffr, huffTree *dctree,
 			z = LBITS(hc, 4);
 			s = RBITS(hc, 4);
 			n = huffr->read(s);
-			if ((z + bpos) >= 64)
+			if ((z + bpos) >= 64) {
 				return -1; // run is to long
+			}
 			while (z > 0) { // write zeroes
 				block[bpos++] = 0;
 				z--;
@@ -4488,8 +4636,9 @@ INTERN int jpg_encode_block_seq(BitWriter *huffw, huffCodes *dctbl,
 		}
 	}
 	// write eob if needed
-	if (z > 0)
+	if (z > 0) {
 		huffw->write_u16(actbl->cval[0x00], actbl->clen[0x00]);
+	}
 
 	return 64 - z;
 }
@@ -4506,8 +4655,9 @@ INTERN int jpg_decode_dc_prg_fs(BitReader *huffr, huffTree *dctree,
 
 	// decode dc
 	hc = jpg_next_huffcode(huffr, dctree);
-	if (hc < 0)
+	if (hc < 0) {
 		return -1; // return error
+	}
 
 	s = static_cast<unsigned char>(hc);
 	n = huffr->read(s);
@@ -4555,8 +4705,9 @@ INTERN int jpg_decode_ac_prg_fs(BitReader *huffr, huffTree *actree,
 	for (bpos = from; bpos <= to;) {
 		// decode next
 		hc = jpg_next_huffcode(huffr, actree);
-		if (hc < 0)
+		if (hc < 0) {
 			return -1;
+		}
 		l = LBITS(hc, 4);
 		r = RBITS(hc, 4);
 		// analyse code
@@ -4564,8 +4715,9 @@ INTERN int jpg_decode_ac_prg_fs(BitReader *huffr, huffTree *actree,
 			z = l;
 			s = r;
 			n = huffr->read(s);
-			if ((z + bpos) > to)
+			if ((z + bpos) > to) {
 				return -1; // run is to long
+			}
 			while (z > 0) { // write zeroes
 				block[bpos++] = 0;
 				z--;
@@ -4631,8 +4783,9 @@ INTERN int jpg_encode_ac_prg_fs(BitWriter *huffw, huffCodes *actbl,
 	if (z > 0) {
 		(*eobrun)++;
 		// check eobrun, encode if needed
-		if ((*eobrun) == actbl->max_eobrun)
+		if ((*eobrun) == actbl->max_eobrun) {
 			jpg_encode_eobrun(huffw, actbl, eobrun);
+		}
 		return 1 + to - z;
 	}
 	return 1 + to;
@@ -4679,12 +4832,13 @@ INTERN int jpg_decode_ac_prg_sa(BitReader *huffr, huffTree *actree,
 	int r;
 
 	// decode AC succesive approximation bits
-	if ((*eobrun) == 0)
+	if ((*eobrun) == 0) {
 		while (bpos <= to) {
 			// decode next
 			hc = jpg_next_huffcode(huffr, actree);
-			if (hc < 0)
+			if (hc < 0) {
 				return -1;
+			}
 			l = LBITS(hc, 4);
 			r = RBITS(hc, 4);
 			// analyse code
@@ -4692,21 +4846,22 @@ INTERN int jpg_decode_ac_prg_sa(BitReader *huffr, huffTree *actree,
 			    (r > 0)) { // decode run/level combination
 				z = l;
 				s = r;
-				if (s == 0)
+				if (s == 0) {
 					v = 0;
-				else if (s == 1) {
+				} else if (s == 1) {
 					n = huffr->read(1);
 					v = (n == 0) ? -1 :
 						       1; // fast decode vli
-				} else
+				} else {
 					return -1; // decoding error
+				}
 				// write zeroes / write correction bits
 				while (true) {
 					if (block[bpos] ==
 					    0) { // skip zeroes / write value
-						if (z > 0)
+						if (z > 0) {
 							z--;
-						else {
+						} else {
 							block[bpos++] = v;
 							break;
 						}
@@ -4716,8 +4871,9 @@ INTERN int jpg_decode_ac_prg_sa(BitReader *huffr, huffTree *actree,
 							(block[bpos] > 0) ? n :
 									    -n;
 					}
-					if (bpos++ >= to)
+					if (bpos++ >= to) {
 						return -1; // error check
+					}
 				}
 			} else { // decode eobrun
 				eob = bpos;
@@ -4727,6 +4883,7 @@ INTERN int jpg_decode_ac_prg_sa(BitReader *huffr, huffTree *actree,
 				break;
 			}
 		}
+	}
 
 	// read after eob correction bits
 	if ((*eobrun) > 0) {
@@ -4893,8 +5050,9 @@ INTERN int jpg_next_huffcode(BitReader *huffw, huffTree *ctree)
 
 	while (node < 256) {
 		node = (huffw->read(1) == 1) ? ctree->r[node] : ctree->l[node];
-		if (node == 0)
+		if (node == 0) {
 			break;
+		}
 	}
 
 	return (node - 256);
@@ -4916,11 +5074,13 @@ INTERN int jpg_next_mcupos(int *mcu, int *cmp, int *csc, int *sub, int *dpos,
 			(*csc) = 0;
 			(*cmp) = cs_cmp[0];
 			(*mcu)++;
-			if ((*mcu) >= mcuc)
+			if ((*mcu) >= mcuc) {
 				sta = 2;
-			else if (rsti > 0)
-				if (--(*rstw) == 0)
+			} else if (rsti > 0) {
+				if (--(*rstw) == 0) {
 					sta = 1;
+				}
+			}
 		} else {
 			(*cmp) = cs_cmp[(*csc)];
 		}
@@ -4954,22 +5114,27 @@ INTERN int jpg_next_mcuposn(const int *cmp, int *dpos, int *rstw)
 
 	// fix for non interleaved mcu - horizontal
 	if (cmpnfo[(*cmp)].bch != cmpnfo[(*cmp)].nch) {
-		if ((*dpos) % cmpnfo[(*cmp)].bch == cmpnfo[(*cmp)].nch)
+		if ((*dpos) % cmpnfo[(*cmp)].bch == cmpnfo[(*cmp)].nch) {
 			(*dpos) += (cmpnfo[(*cmp)].bch - cmpnfo[(*cmp)].nch);
+		}
 	}
 
 	// fix for non interleaved mcu - vertical
 	if (cmpnfo[(*cmp)].bcv != cmpnfo[(*cmp)].ncv) {
-		if ((*dpos) / cmpnfo[(*cmp)].bch == cmpnfo[(*cmp)].ncv)
+		if ((*dpos) / cmpnfo[(*cmp)].bch == cmpnfo[(*cmp)].ncv) {
 			(*dpos) = cmpnfo[(*cmp)].bc;
+		}
 	}
 
 	// check position
-	if ((*dpos) >= cmpnfo[(*cmp)].bc)
+	if ((*dpos) >= cmpnfo[(*cmp)].bc) {
 		return 2;
-	if (rsti > 0)
-		if (--(*rstw) == 0)
+	}
+	if (rsti > 0) {
+		if (--(*rstw) == 0) {
 			return 1;
+		}
+	}
 
 	return 0;
 }
@@ -4983,8 +5148,9 @@ INTERN int jpg_skip_eobrun(const int *cmp, int *dpos, int *rstw, int *eobrun)
 	{
 		// compare rst wait counter if needed
 		if (rsti > 0) {
-			if ((*eobrun) > (*rstw))
+			if ((*eobrun) > (*rstw)) {
 				return -1;
+			}
 
 			(*rstw) -= (*eobrun);
 		}
@@ -4999,10 +5165,12 @@ INTERN int jpg_skip_eobrun(const int *cmp, int *dpos, int *rstw, int *eobrun)
 
 		// fix for non interleaved mcu - vertical
 		if (cmpnfo[(*cmp)].bcv != cmpnfo[(*cmp)].ncv) {
-			if ((*dpos) / cmpnfo[(*cmp)].bch >= cmpnfo[(*cmp)].ncv)
+			if ((*dpos) / cmpnfo[(*cmp)].bch >=
+			    cmpnfo[(*cmp)].ncv) {
 				(*dpos) += (cmpnfo[(*cmp)].bcv -
 					    cmpnfo[(*cmp)].ncv) *
 					   cmpnfo[(*cmp)].bch;
+			}
 		}
 
 		// skip blocks
@@ -5012,13 +5180,17 @@ INTERN int jpg_skip_eobrun(const int *cmp, int *dpos, int *rstw, int *eobrun)
 		(*eobrun) = 0;
 
 		// check position
-		if ((*dpos) == cmpnfo[(*cmp)].bc)
+		if ((*dpos) == cmpnfo[(*cmp)].bc) {
 			return 2;
-		if ((*dpos) > cmpnfo[(*cmp)].bc)
+		}
+		if ((*dpos) > cmpnfo[(*cmp)].bc) {
 			return -1;
-		if (rsti > 0)
-			if ((*rstw) == 0)
+		}
+		if (rsti > 0) {
+			if ((*rstw) == 0) {
 				return 1;
+			}
+		}
 	}
 
 	return 0;
@@ -5081,21 +5253,24 @@ INTERN void jpg_build_huffcodes(const unsigned char *clen,
 		// go through each code & store path
 		for (j = hc->clen[i] - 1; j > 0; j--) {
 			if (BITN(hc->cval[i], j) == 1) {
-				if (ht->r[node] == 0)
+				if (ht->r[node] == 0) {
 					ht->r[node] = nextfree++;
+				}
 				node = ht->r[node];
 			} else {
-				if (ht->l[node] == 0)
+				if (ht->l[node] == 0) {
 					ht->l[node] = nextfree++;
+				}
 				node = ht->l[node];
 			}
 		}
 		// last link is number of targetvalue + 256
 		if (hc->clen[i] > 0) {
-			if (BITN(hc->cval[i], 0) == 1)
+			if (BITN(hc->cval[i], 0) == 1) {
 				ht->r[node] = i + 256;
-			else
+			} else {
 				ht->l[node] = i + 256;
+			}
 		}
 	}
 }
@@ -5120,8 +5295,9 @@ INTERN bool pjg_encode_zstscan(ArithmeticEncoder *enc, int cmp)
 	pjg_get_zerosort_scan(zsrtscan[cmp], cmp);
 
 	// preset freqlist
-	for (i = 0; i < 64; i++)
+	for (i = 0; i < 64; i++) {
 		freqlist[i] = stdscan[i];
+	}
 
 	// init model
 	model = INIT_MODEL_S(64, 64, 1);
@@ -5135,11 +5311,13 @@ INTERN bool pjg_encode_zstscan(ArithmeticEncoder *enc, int cmp)
 		tpos = 0;
 		for (c = i; c < 64; c++) {
 			// search next val != 0 in list
-			for (tpos++; freqlist[tpos] == 0; tpos++)
+			for (tpos++; freqlist[tpos] == 0; tpos++) {
 				;
+			}
 			// get out if not a match
-			if (freqlist[tpos] != zsrtscan[cmp][c])
+			if (freqlist[tpos] != zsrtscan[cmp][c]) {
 				break;
+			}
 		}
 		if (c == 64) {
 			// remaining list is in sorted scanorder
@@ -5151,9 +5329,11 @@ INTERN bool pjg_encode_zstscan(ArithmeticEncoder *enc, int cmp)
 		// list is not in sorted order -> next pos hat to be encoded
 		cpos = 1;
 		// encode position
-		for (tpos = 0; freqlist[tpos] != zsrtscan[cmp][i]; tpos++)
-			if (freqlist[tpos] != 0)
+		for (tpos = 0; freqlist[tpos] != zsrtscan[cmp][i]; tpos++) {
+			if (freqlist[tpos] != 0) {
 				cpos++;
+			}
+		}
 		// remove from list
 		freqlist[tpos] = 0;
 
@@ -5434,12 +5614,15 @@ INTERN bool pjg_encode_ac_high(ArithmeticEncoder *enc, int cmp)
 	zdstls = static_cast<unsigned char *>(calloc(bc, sizeof(char)));
 	if ((absv_store == nullptr) || (sgn_store == nullptr) ||
 	    (zdstls == nullptr)) {
-		if (absv_store != nullptr)
+		if (absv_store != nullptr) {
 			free(absv_store);
-		if (sgn_store != nullptr)
+		}
+		if (sgn_store != nullptr) {
 			free(sgn_store);
-		if (zdstls != nullptr)
+		}
+		if (zdstls != nullptr) {
 			free(zdstls);
+		}
 		sprintf(errormessage, MEM_ERRMSG);
 		errorlevel = 2;
 		return false;
@@ -5458,8 +5641,9 @@ INTERN bool pjg_encode_ac_high(ArithmeticEncoder *enc, int cmp)
 	memset(eob_y, 0x00, bc * sizeof(char));
 
 	// make a local copy of the zero distribution list
-	for (dpos = 0; dpos < bc; dpos++)
+	for (dpos = 0; dpos < bc; dpos++) {
 		zdstls[dpos] = zdstdata[cmp][dpos];
+	}
 
 	// work through lower 7x7 bands in order of freqscan
 	for (i = 1; i < 64; i++) {
@@ -5468,8 +5652,9 @@ INTERN bool pjg_encode_ac_high(ArithmeticEncoder *enc, int cmp)
 		b_x = unzigzag[bpos] % 8;
 		b_y = unzigzag[bpos] / 8;
 
-		if ((b_x == 0) || (b_y == 0))
+		if ((b_x == 0) || (b_y == 0)) {
 			continue; // process remaining coefficients elsewhere
+		}
 
 		// preset absolute values/sign storage
 		memset(absv_store, 0x00, bc * sizeof(short));
@@ -5488,8 +5673,9 @@ INTERN bool pjg_encode_ac_high(ArithmeticEncoder *enc, int cmp)
 		// arithmetic compression loo
 		for (dpos = 0; dpos < bc; dpos++) {
 			// skip if beyound eob
-			if (zdstls[dpos] == 0)
+			if (zdstls[dpos] == 0) {
 				continue;
+			}
 
 			//calculate x/y positions in band
 			p_y = dpos / w;
@@ -5531,10 +5717,11 @@ INTERN bool pjg_encode_ac_high(ArithmeticEncoder *enc, int cmp)
 				// encode sign
 				ctx_sgn = (p_x > 0) ? sgn_nbh[dpos] :
 						      0; // sign context
-				if (p_y > 0)
+				if (p_y > 0) {
 					ctx_sgn +=
 						3 *
 						sgn_nbv[dpos]; // IMPROVE !!!!!!!!!!!
+				}
 				mod_sgn->shift_context(ctx_sgn);
 				encode_ari(enc, mod_sgn, sgn);
 				// store absolute value/sign, decrement zdst
@@ -5542,10 +5729,12 @@ INTERN bool pjg_encode_ac_high(ArithmeticEncoder *enc, int cmp)
 				sgn_store[dpos] = sgn + 1;
 				zdstls[dpos]--;
 				// recalculate x/y eob
-				if (b_x > eob_x[dpos])
+				if (b_x > eob_x[dpos]) {
 					eob_x[dpos] = b_x;
-				if (b_y > eob_y[dpos])
+				}
+				if (b_y > eob_y[dpos]) {
 					eob_y[dpos] = b_y;
+				}
 			}
 		}
 		// flush models
@@ -5665,19 +5854,21 @@ INTERN bool pjg_encode_ac_low(ArithmeticEncoder *enc, int cmp)
 		// arithmetic compression loop
 		for (dpos = 0; dpos < bc; dpos++) {
 			// skip if beyound eob
-			if (zdstls[dpos] == 0)
+			if (zdstls[dpos] == 0) {
 				continue;
+			}
 
 			// calculate x/y positions in band
 			p_y = dpos / w;
 			p_x = dpos % w;
 
 			// edge treatment / calculate LAKHANI context
-			if ((*edge_c) > 0)
+			if ((*edge_c) > 0) {
 				ctx_lak = pjg_lakh_context(coeffs_x, coeffs_a,
 							   pred_cf, dpos);
-			else
+			} else {
 				ctx_lak = 0;
+			}
 			ctx_lak = CLAMPED(max_valn, max_valp, ctx_lak);
 			ctx_len = BITLEN2048N(ctx_lak); // BITLENGTH context
 
@@ -5714,8 +5905,9 @@ INTERN bool pjg_encode_ac_low(ArithmeticEncoder *enc, int cmp)
 					encode_ari(enc, mod_top, bt);
 					// update context
 					ctx_res = ctx_res << 1;
-					if (bt)
+					if (bt) {
 						ctx_res |= 1;
+					}
 				}
 				for (; bp >= 0; bp--) {
 					shift_model(mod_res, zdstls[dpos],
@@ -5801,8 +5993,9 @@ INTERN bool pjg_decode_zstscan(ArithmeticDecoder *dec, int cmp)
 	zsrtscan[cmp][0] = 0;
 
 	// preset freqlist
-	for (i = 0; i < 64; i++)
+	for (i = 0; i < 64; i++) {
 		freqlist[i] = stdscan[i];
+	}
 
 	// init model
 	model = INIT_MODEL_S(64, 64, 1);
@@ -5820,8 +6013,9 @@ INTERN bool pjg_decode_zstscan(ArithmeticDecoder *dec, int cmp)
 			// remaining list is identical to scan
 			// fill the scan & make a quick exit
 			for (tpos = 0; i < 64; i++) {
-				while (freqlist[++tpos] == 0)
+				while (freqlist[++tpos] == 0) {
 					;
+				}
 				zsrtscan[cmp][i] = freqlist[tpos];
 			}
 			break;
@@ -5829,10 +6023,12 @@ INTERN bool pjg_decode_zstscan(ArithmeticDecoder *dec, int cmp)
 
 		// decode position from list
 		for (tpos = 0; tpos < 64; tpos++) {
-			if (freqlist[tpos] != 0)
+			if (freqlist[tpos] != 0) {
 				cpos--;
-			if (cpos == 0)
+			}
+			if (cpos == 0) {
 				break;
+			}
 		}
 
 		// write decoded position to zero sort scan
@@ -6031,8 +6227,9 @@ INTERN bool pjg_decode_dc(ArithmeticDecoder *dec, int cmp)
 				bt = decode_ari(dec, mod_res);
 				// update absv
 				absv = absv << 1;
-				if (bt)
+				if (bt) {
 					absv |= 1;
+				}
 			}
 			// decode sign
 			sgn = decode_ari(dec, mod_sgn);
@@ -6114,12 +6311,15 @@ INTERN bool pjg_decode_ac_high(ArithmeticDecoder *dec, int cmp)
 	zdstls = static_cast<unsigned char *>(calloc(bc, sizeof(char)));
 	if ((absv_store == nullptr) || (sgn_store == nullptr) ||
 	    (zdstls == nullptr)) {
-		if (absv_store != nullptr)
+		if (absv_store != nullptr) {
 			free(absv_store);
-		if (sgn_store != nullptr)
+		}
+		if (sgn_store != nullptr) {
 			free(sgn_store);
-		if (zdstls != nullptr)
+		}
+		if (zdstls != nullptr) {
 			free(zdstls);
+		}
 		sprintf(errormessage, MEM_ERRMSG);
 		errorlevel = 2;
 		return false;
@@ -6138,8 +6338,9 @@ INTERN bool pjg_decode_ac_high(ArithmeticDecoder *dec, int cmp)
 	memset(eob_y, 0x00, bc * sizeof(char));
 
 	// make a local copy of the zero distribution list
-	for (dpos = 0; dpos < bc; dpos++)
+	for (dpos = 0; dpos < bc; dpos++) {
 		zdstls[dpos] = zdstdata[cmp][dpos];
+	}
 
 	// work through lower 7x7 bands in order of freqscan
 	for (i = 1; i < 64; i++) {
@@ -6148,8 +6349,9 @@ INTERN bool pjg_decode_ac_high(ArithmeticDecoder *dec, int cmp)
 		b_x = unzigzag[bpos] % 8;
 		b_y = unzigzag[bpos] / 8;
 
-		if ((b_x == 0) || (b_y == 0))
+		if ((b_x == 0) || (b_y == 0)) {
 			continue; // process remaining coefficients elsewhere
+		}
 
 		// preset absolute values/sign storage
 		memset(absv_store, 0x00, bc * sizeof(short));
@@ -6168,8 +6370,9 @@ INTERN bool pjg_decode_ac_high(ArithmeticDecoder *dec, int cmp)
 		// arithmetic compression loop
 		for (dpos = 0; dpos < bc; dpos++) {
 			// skip if beyound eob
-			if (zdstls[dpos] == 0)
+			if (zdstls[dpos] == 0) {
 				continue;
+			}
 
 			//calculate x/y positions in band
 			p_y = dpos / w;
@@ -6204,16 +6407,18 @@ INTERN bool pjg_decode_ac_high(ArithmeticDecoder *dec, int cmp)
 					bt = decode_ari(dec, mod_res);
 					// update absv
 					absv = absv << 1;
-					if (bt)
+					if (bt) {
 						absv |= 1;
+					}
 				}
 				// decode sign
 				ctx_sgn = (p_x > 0) ? sgn_nbh[dpos] :
 						      0; // sign context
-				if (p_y > 0)
+				if (p_y > 0) {
 					ctx_sgn +=
 						3 *
 						sgn_nbv[dpos]; // IMPROVE! !!!!!!!!!!!
+				}
 				mod_sgn->shift_context(ctx_sgn);
 				sgn = decode_ari(dec, mod_sgn);
 				// copy to colldata
@@ -6223,10 +6428,12 @@ INTERN bool pjg_decode_ac_high(ArithmeticDecoder *dec, int cmp)
 				sgn_store[dpos] = sgn + 1;
 				zdstls[dpos]--;
 				// recalculate x/y eob
-				if (b_x > eob_x[dpos])
+				if (b_x > eob_x[dpos]) {
 					eob_x[dpos] = b_x;
-				if (b_y > eob_y[dpos])
+				}
+				if (b_y > eob_y[dpos]) {
 					eob_y[dpos] = b_y;
+				}
 			}
 		}
 		// flush models
@@ -6346,19 +6553,21 @@ INTERN bool pjg_decode_ac_low(ArithmeticDecoder *dec, int cmp)
 		// arithmetic compression loop
 		for (dpos = 0; dpos < bc; dpos++) {
 			// skip if beyound eob
-			if (zdstls[dpos] == 0)
+			if (zdstls[dpos] == 0) {
 				continue;
+			}
 
 			//calculate x/y positions in band
 			p_y = dpos / w;
 			p_x = dpos % w;
 
 			// edge treatment / calculate LAKHANI context
-			if ((*edge_c) > 0)
+			if ((*edge_c) > 0) {
 				ctx_lak = pjg_lakh_context(coeffs_x, coeffs_a,
 							   pred_cf, dpos);
-			else
+			} else {
 				ctx_lak = 0;
+			}
 			ctx_lak = CLAMPED(max_valn, max_valp, ctx_lak);
 			ctx_len = BITLEN2048N(ctx_lak); // BITLENGTH context
 			// shift context / do context modelling (segmentation is done per context)
@@ -6388,8 +6597,9 @@ INTERN bool pjg_decode_ac_low(ArithmeticDecoder *dec, int cmp)
 					bt = decode_ari(dec, mod_top);
 					// update context
 					ctx_res = ctx_res << 1;
-					if (bt)
+					if (bt) {
 						ctx_res |= 1;
+					}
 				}
 				absv = (ctx_res == 0) ? 1 : ctx_res; // !!!!
 				for (; bp >= 0; bp--) {
@@ -6399,8 +6609,9 @@ INTERN bool pjg_decode_ac_low(ArithmeticDecoder *dec, int cmp)
 					bt = decode_ari(dec, mod_res);
 					// update absv
 					absv = absv << 1;
-					if (bt)
+					if (bt) {
 						absv |= 1;
+					}
 				}
 				// decode sign
 				shift_model(mod_sgn, zdstls[dpos], ctx_sgn);
@@ -6444,8 +6655,9 @@ INTERN bool pjg_decode_generic(ArithmeticDecoder *dec, unsigned char **data,
 	model = INIT_MODEL_S(256 + 1, 256, 1);
 	while (true) {
 		c = decode_ari(dec, model);
-		if (c == 256)
+		if (c == 256) {
 			break;
+		}
 		bwrt->write_byte(static_cast<unsigned char>(c));
 		model->shift_context(c);
 	}
@@ -6461,8 +6673,9 @@ INTERN bool pjg_decode_generic(ArithmeticDecoder *dec, unsigned char **data,
 
 	// get data/length and close byte writer
 	(*data) = bwrt->get_c_data();
-	if (len != nullptr)
+	if (len != nullptr) {
 		(*len) = bwrt->num_bytes_written();
+	}
 	delete bwrt;
 
 	return true;
@@ -6501,15 +6714,18 @@ INTERN void pjg_get_zerosort_scan(unsigned char *sv, int cmp)
 	}
 
 	// count zeroes for each frequency
-	for (bpos = 0; bpos < 64; bpos++)
-		for (dpos = 0; dpos < bc; dpos++)
-			if (colldata[cmp][bpos][dpos] == 0)
+	for (bpos = 0; bpos < 64; bpos++) {
+		for (dpos = 0; dpos < bc; dpos++) {
+			if (colldata[cmp][bpos][dpos] == 0) {
 				zdist[bpos]++;
+			}
+		}
+	}
 
 	// bubble sort according to count of zeroes (descending order)
 	while (!done) {
 		done = true;
-		for (i = 2; i < 64; i++)
+		for (i = 2; i < 64; i++) {
 			if (zdist[i] < zdist[i - 1]) {
 				swap = zdist[i];
 				zdist[i] = zdist[i - 1];
@@ -6521,6 +6737,7 @@ INTERN void pjg_get_zerosort_scan(unsigned char *sv, int cmp)
 
 				done = false;
 			}
+		}
 	}
 }
 
@@ -6554,12 +6771,14 @@ INTERN bool pjg_optimize_header(void)
 					     spos < std_huff_lengths[i];
 					     spos++) {
 						if (hdrdata[hpos + spos] !=
-						    std_huff_tables[i][spos])
+						    std_huff_tables[i][spos]) {
 							break;
+						}
 					}
 					// check if comparison ok
-					if (spos != std_huff_lengths[i])
+					if (spos != std_huff_lengths[i]) {
 						continue;
+					}
 
 					// if we get here, the table matches the standard table
 					// number 'i', so it can be replaced
@@ -6567,16 +6786,19 @@ INTERN bool pjg_optimize_header(void)
 						std_huff_lengths[i] - 16 - i;
 					hdrdata[hpos + 1] = i;
 					for (spos = 2;
-					     spos < std_huff_lengths[i]; spos++)
+					     spos < std_huff_lengths[i];
+					     spos++) {
 						hdrdata[hpos + spos] = 0x00;
+					}
 					// everything done here, so leave
 					break;
 				}
 
 				skip = 16;
-				for (i = 0; i < 16; i++)
+				for (i = 0; i < 16; i++) {
 					skip += static_cast<int>(
 						hdrdata[hpos + i]);
+				}
 				hpos += skip;
 			}
 		} else if (type == 0xDB) { // for DQT
@@ -6591,9 +6813,10 @@ INTERN bool pjg_optimize_header(void)
 					continue;
 				}
 				// do diff coding for 8 bit precision
-				for (spos = 63; spos > 0; spos--)
+				for (spos = 63; spos > 0; spos--) {
 					hdrdata[hpos + spos] -=
 						hdrdata[hpos + spos - 1];
+				}
 
 				hpos += 64;
 			}
@@ -6643,9 +6866,10 @@ INTERN bool pjg_unoptimize_header(void)
 				}
 
 				skip = 16;
-				for (i = 0; i < 16; i++)
+				for (i = 0; i < 16; i++) {
 					skip += static_cast<int>(
 						hdrdata[hpos + i]);
+				}
 				hpos += skip;
 			}
 		} else if (type == 0xDB) { // for DQT
@@ -6660,9 +6884,10 @@ INTERN bool pjg_unoptimize_header(void)
 					continue;
 				}
 				// undo diff coding for 8 bit precision
-				for (spos = 1; spos < 64; spos++)
+				for (spos = 1; spos < 64; spos++) {
 					hdrdata[hpos + spos] +=
 						hdrdata[hpos + spos - 1];
+				}
 
 				hpos += 64;
 			}
@@ -6823,16 +7048,18 @@ INTERN void get_context_nnb(int pos, int w, int *a, int *b)
 		*b = -1;
 	} else if ((pos % w) == 0) {
 		*b = pos - w;
-		if (pos >= (w << 1))
+		if (pos >= (w << 1)) {
 			*a = pos - (w << 1);
-		else
+		} else {
 			*a = *b;
+		}
 	} else if (pos < w) {
 		*a = pos - 1;
-		if (pos >= 2)
+		if (pos >= 2) {
 			*b = pos - 2;
-		else
+		} else {
 			*b = *a;
+		}
 	} else {
 		*a = pos - 1;
 		*b = pos - w;
@@ -7068,10 +7295,12 @@ INTERN inline int plocoi(int a, int b, int c)
 	min = (a < b) ? a : b;
 	max = (a > b) ? a : b;
 
-	if (c >= max)
+	if (c >= max) {
 		return min;
-	if (c <= min)
+	}
+	if (c <= min) {
 		return max;
+	}
 
 	return a + b - c;
 }
@@ -7090,13 +7319,14 @@ INTERN inline int median_int(int *values, int size)
 	done = false;
 	while (!done) {
 		done = true;
-		for (i = 1; i < size; i++)
+		for (i = 1; i < size; i++) {
 			if (values[i] < values[i - 1]) {
 				swap = values[i];
 				values[i] = values[i - 1];
 				values[i - 1] = swap;
 				done = false;
 			}
+		}
 	}
 
 	// return median
@@ -7118,13 +7348,14 @@ INTERN inline float median_float(float *values, int size)
 	done = false;
 	while (!done) {
 		done = true;
-		for (i = 1; i < size; i++)
+		for (i = 1; i < size; i++) {
 			if (values[i] < values[i - 1]) {
 				swap = values[i];
 				values[i] = values[i - 1];
 				values[i - 1] = swap;
 				done = false;
 			}
+		}
 	}
 
 	// return median
@@ -7153,11 +7384,13 @@ INTERN inline void progress_bar(int current, int last)
 	for (i = 0; i < barpos; i++)
 		fprintf(msgout, "\xFE");
 #else
-	for (i = 0; i < barpos; i++)
+	for (i = 0; i < barpos; i++) {
 		fprintf(msgout, "X");
+	}
 #endif
-	for (; i < BARLEN; i++)
+	for (; i < BARLEN; i++) {
 		fprintf(msgout, " ");
+	}
 	fprintf(msgout, "]");
 }
 #endif
@@ -7219,8 +7452,9 @@ INTERN inline void set_extension(char *filename, const char *extension)
 	if (extension != nullptr) {
 		(*extstr++) = '.';
 		strcpy(extstr, extension);
-	} else
+	} else {
 		(*extstr) = '\0';
+	}
 }
 #endif
 
@@ -7243,8 +7477,9 @@ INTERN inline void add_underscore(char *filename)
 	if (extstr != nullptr) {
 		(*extstr++) = '_';
 		strcpy(extstr, strrchr(tmpname, '.'));
-	} else
+	} else {
 		sprintf(filename, "%s_", tmpname);
+	}
 
 	// free memory
 	free(tmpname);
@@ -7259,8 +7494,9 @@ INTERN inline bool file_exists(const char *filename)
 	// needed for both, executable and library
 	FILE *fp = fopen(filename, "rb");
 
-	if (fp == nullptr)
+	if (fp == nullptr) {
 		return false;
+	}
 
 	fclose(fp);
 	return true;
