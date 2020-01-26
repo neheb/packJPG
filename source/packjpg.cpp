@@ -2303,12 +2303,7 @@ INTERN bool read_jpeg( void )
 	jpgfilesize = str_in->get_size();	
 	
 	// parse header for image info
-	if ( !jpg_setup_imginfo() ) {
-		return false;
-	}
-	
-	
-	return true;
+	return jpg_setup_imginfo();
 }
 
 
