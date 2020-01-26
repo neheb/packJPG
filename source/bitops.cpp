@@ -12,6 +12,7 @@ reading and writing of arrays
 #include <experimental/filesystem>
 #include <fstream>
 #include <stdexcept>
+#include <utility>
 
 #if defined(_WIN32) || defined(WIN32)
 #include <fcntl.h>
@@ -248,8 +249,8 @@ unsigned char* Reader::get_c_data() {
     return c_data_copy;
 }
 
-MemoryReader::MemoryReader(const std::vector<std::uint8_t>& bytes) :
-	data_(bytes),
+MemoryReader::MemoryReader(std::vector<std::uint8_t>  bytes) :
+	data_(std::move(bytes)),
 	cbyte_(std::begin(data_)) {
 }
 

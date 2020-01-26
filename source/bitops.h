@@ -150,7 +150,7 @@ public:
 
 class MemoryReader : public Reader {
 public:
-	MemoryReader(const std::vector<std::uint8_t>& bytes);
+	MemoryReader(std::vector<std::uint8_t>  bytes);
     MemoryReader(const std::uint8_t* bytes, std::size_t size);
 
 	~MemoryReader() {}
