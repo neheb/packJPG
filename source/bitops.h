@@ -168,7 +168,7 @@ class MemoryReader : public Reader {
 			 std::size_t num_to_read,
 			 std::size_t offset = 0) override;
 	std::uint8_t read_byte() override;
-	bool read_byte(std::uint8_t *to) override;
+	bool read_byte(std::uint8_t *byte) override;
 
 	void skip(std::size_t n) override;
 	void rewind_bytes(std::size_t n) override;
