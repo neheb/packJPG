@@ -228,7 +228,7 @@ std::vector<std::uint8_t> BitWriter::get_bytes() {
 
 unsigned char* BitWriter::get_c_bytes() {
     pad(); // Pad the last bits of the current byte before returning the written bytes.
-    unsigned char* c_bytes = new unsigned char[bytes_.size()];
+    auto c_bytes = new unsigned char[bytes_.size()];
     std::copy(std::begin(bytes_), std::end(bytes_), c_bytes);
     return c_bytes;
 }

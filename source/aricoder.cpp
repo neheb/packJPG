@@ -276,7 +276,7 @@ model_s::model_s( int max_s, int max_c, int max_o, int c_lim ) :
 	std::fill(scoreboard, scoreboard + max_symbol, false);
 	
 	// set up null table
-	table_s* null_table = new table_s;
+	auto null_table = new table_s;
 	null_table->counts = std::vector<uint16_t>(max_symbol, uint16_t(1));  // Set all probabilities to 1.
 
 	// set up internal counts
@@ -284,7 +284,7 @@ model_s::model_s( int max_s, int max_c, int max_o, int c_lim ) :
 	null_table->max_symbol = max_symbol;
 	
 	// set up start table
-	table_s* start_table = new table_s;
+	auto start_table = new table_s;
 	start_table->links = std::vector<table_s*>(max_context);
 	
 	// integrate tables into contexts
@@ -573,12 +573,12 @@ model_b::model_b( int max_c, int max_o, int c_lim ) :
 		contexts(max_o + 3)
 {
 	// set up null table
-	table* null_table = new table;
+	auto null_table = new table;
 	null_table->counts = std::vector<uint16_t>(2, uint16_t(1));
 	null_table->scale = uint32_t(2);
 	
 	// set up start table
-	table* start_table = new table;
+	auto start_table = new table;
 	start_table->links = std::vector<table*>(max_context);
 		
 	// integrate tables into contexts
