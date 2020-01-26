@@ -414,13 +414,13 @@ INTERN bool jpg_parse_jfif( unsigned char type, unsigned int len, unsigned char*
 INTERN bool jpg_rebuild_header( void );
 
 INTERN int jpg_decode_block_seq( BitReader* huffr, huffTree* dctree, huffTree* actree, short* block );
-INTERN int jpg_encode_block_seq( BitWriter* huffw, huffCodes* dctbl, huffCodes* actbl, short* block );
+INTERN int jpg_encode_block_seq( BitWriter* huffw, huffCodes* dctbl, huffCodes* actbl, const short* block );
 
 INTERN int jpg_decode_dc_prg_fs( BitReader* huffr, huffTree* dctree, short* block );
-INTERN int jpg_encode_dc_prg_fs( BitWriter* huffw, huffCodes* dctbl, short* block );
+INTERN int jpg_encode_dc_prg_fs( BitWriter* huffw, huffCodes* dctbl, const short* block );
 INTERN int jpg_decode_ac_prg_fs( BitReader* huffr, huffTree* actree, short* block,
 						int* eobrun, int from, int to );
-INTERN int jpg_encode_ac_prg_fs( BitWriter* huffw, huffCodes* actbl, short* block,
+INTERN int jpg_encode_ac_prg_fs( BitWriter* huffw, huffCodes* actbl, const short* block,
 						int* eobrun, int from, int to );
 
 INTERN int jpg_decode_dc_prg_sa( BitReader* huffr, short* block );
@@ -428,7 +428,7 @@ INTERN int jpg_encode_dc_prg_sa( BitWriter* huffw, short* block );
 INTERN int jpg_decode_ac_prg_sa( BitReader* huffr, huffTree* actree, short* block,
 						int* eobrun, int from, int to );
 INTERN int jpg_encode_ac_prg_sa( BitWriter* huffw, std::vector<std::uint8_t>& storw, huffCodes* actbl,
-						short* block, int* eobrun, int from, int to );
+						const short* block, int* eobrun, int from, int to );
 
 INTERN int jpg_decode_eobrun_sa( BitReader* huffr, short* block, int* eobrun, int from, int to );
 INTERN int jpg_encode_eobrun( BitWriter* huffw, huffCodes* actbl, int* eobrun );
@@ -436,10 +436,10 @@ INTERN int jpg_encode_crbits( BitWriter* huffw, std::vector<std::uint8_t>& storw
 
 INTERN int jpg_next_huffcode( BitReader *huffw, huffTree *ctree );
 INTERN int jpg_next_mcupos( int* mcu, int* cmp, int* csc, int* sub, int* dpos, int* rstw );
-INTERN int jpg_next_mcuposn( int* cmp, int* dpos, int* rstw );
-INTERN int jpg_skip_eobrun( int* cmp, int* dpos, int* rstw, int* eobrun );
+INTERN int jpg_next_mcuposn( const int* cmp, int* dpos, int* rstw );
+INTERN int jpg_skip_eobrun( const int* cmp, int* dpos, int* rstw, int* eobrun );
 
-INTERN void jpg_build_huffcodes( unsigned char *clen, unsigned char *cval,
+INTERN void jpg_build_huffcodes( const unsigned char *clen, const unsigned char *cval,
 				huffCodes *hc, huffTree *ht );
 
 /* -----------------------------------------------
@@ -469,8 +469,8 @@ INTERN bool pjg_optimize_header( void );
 INTERN bool pjg_unoptimize_header( void );
 
 INTERN void pjg_aavrg_prepare( unsigned short** abs_coeffs, int* weights, unsigned short* abs_store, int cmp );
-INTERN int pjg_aavrg_context( unsigned short** abs_coeffs, int* weights, int pos, int p_y, int p_x, int r_x );
-INTERN int pjg_lakh_context( signed short** coeffs_x, signed short** coeffs_a, int* pred_cf, int pos );
+INTERN int pjg_aavrg_context( unsigned short** abs_coeffs, const int* weights, int pos, int p_y, int p_x, int r_x );
+INTERN int pjg_lakh_context( signed short** coeffs_x, signed short** coeffs_a, const int* pred_cf, int pos );
 INTERN void get_context_nnb( int pos, int w, int *a, int *b );
 
 
@@ -3994,7 +3994,7 @@ INTERN int jpg_decode_block_seq( BitReader* huffr, huffTree* dctree, huffTree* a
 /* -----------------------------------------------
 	sequential block encoding routine
 	----------------------------------------------- */
-INTERN int jpg_encode_block_seq( BitWriter* huffw, huffCodes* dctbl, huffCodes* actbl, short* block )
+INTERN int jpg_encode_block_seq( BitWriter* huffw, huffCodes* dctbl, huffCodes* actbl, const short* block )
 {
 	unsigned short n;
 	unsigned char  s;
@@ -4069,7 +4069,7 @@ INTERN int jpg_decode_dc_prg_fs( BitReader* huffr, huffTree* dctree, short* bloc
 /* -----------------------------------------------
 	progressive DC encoding routine
 	----------------------------------------------- */
-INTERN int jpg_encode_dc_prg_fs( BitWriter* huffw, huffCodes* dctbl, short* block )
+INTERN int jpg_encode_dc_prg_fs( BitWriter* huffw, huffCodes* dctbl, const short* block )
 {
 	unsigned short n;
 	unsigned char  s;
@@ -4143,7 +4143,7 @@ INTERN int jpg_decode_ac_prg_fs( BitReader* huffr, huffTree* actree, short* bloc
 /* -----------------------------------------------
 	progressive AC encoding routine
 	----------------------------------------------- */
-INTERN int jpg_encode_ac_prg_fs( BitWriter* huffw, huffCodes* actbl, short* block, int* eobrun, int from, int to )
+INTERN int jpg_encode_ac_prg_fs( BitWriter* huffw, huffCodes* actbl, const short* block, int* eobrun, int from, int to )
 {
 	unsigned short n;
 	unsigned char  s;
@@ -4296,7 +4296,7 @@ INTERN int jpg_decode_ac_prg_sa( BitReader* huffr, huffTree* actree, short* bloc
 /* -----------------------------------------------
 	progressive AC SA encoding routine
 	----------------------------------------------- */
-INTERN int jpg_encode_ac_prg_sa( BitWriter* huffw, std::vector<std::uint8_t>& storw, huffCodes* actbl, short* block, int* eobrun, int from, int to )
+INTERN int jpg_encode_ac_prg_sa( BitWriter* huffw, std::vector<std::uint8_t>& storw, huffCodes* actbl, const short* block, int* eobrun, int from, int to )
 {
 	unsigned short n;
 	unsigned char  s;
@@ -4507,7 +4507,7 @@ INTERN int jpg_next_mcupos( int* mcu, int* cmp, int* csc, int* sub, int* dpos, i
 /* -----------------------------------------------
 	calculates next position (non interleaved)
 	----------------------------------------------- */
-INTERN int jpg_next_mcuposn( int* cmp, int* dpos, int* rstw )
+INTERN int jpg_next_mcuposn( const int* cmp, int* dpos, int* rstw )
 {
 	// increment position
 	(*dpos)++;
@@ -4537,7 +4537,7 @@ INTERN int jpg_next_mcuposn( int* cmp, int* dpos, int* rstw )
 /* -----------------------------------------------
 	skips the eobrun, calculates next position
 	----------------------------------------------- */
-INTERN int jpg_skip_eobrun( int* cmp, int* dpos, int* rstw, int* eobrun )
+INTERN int jpg_skip_eobrun( const int* cmp, int* dpos, int* rstw, int* eobrun )
 {
 	if ( (*eobrun) > 0 ) // error check for eobrun
 	{		
@@ -4582,7 +4582,7 @@ INTERN int jpg_skip_eobrun( int* cmp, int* dpos, int* rstw, int* eobrun )
 /* -----------------------------------------------
 	creates huffman-codes & -trees from dht-data
 	----------------------------------------------- */
-INTERN void jpg_build_huffcodes( unsigned char *clen, unsigned char *cval,	huffCodes *hc, huffTree *ht )
+INTERN void jpg_build_huffcodes( const unsigned char *clen, const unsigned char *cval,	huffCodes *hc, huffTree *ht )
 {
 	int nextfree;	
 	int code;
@@ -6222,7 +6222,7 @@ INTERN void pjg_aavrg_prepare( unsigned short** abs_coeffs, int* weights, unsign
 /* -----------------------------------------------
 	special average context used in coeff encoding
 	----------------------------------------------- */
-INTERN int pjg_aavrg_context( unsigned short** abs_coeffs, int* weights, int pos, int p_y, int p_x, int r_x )
+INTERN int pjg_aavrg_context( unsigned short** abs_coeffs, const int* weights, int pos, int p_y, int p_x, int r_x )
 {
 	int ctx_avr = 0; // AVERAGE context
 	int w_ctx = 0; // accumulated weight of context
@@ -6279,7 +6279,7 @@ INTERN int pjg_aavrg_context( unsigned short** abs_coeffs, int* weights, int pos
 /* -----------------------------------------------
 	lakhani ac context used in coeff encoding
 	----------------------------------------------- */
-INTERN int pjg_lakh_context( signed short** coeffs_x, signed short** coeffs_a, int* pred_cf, int pos )
+INTERN int pjg_lakh_context( signed short** coeffs_x, signed short** coeffs_a, const int* pred_cf, int pos )
 {
 	int pred = 0;
 	
