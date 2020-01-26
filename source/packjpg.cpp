@@ -330,7 +330,7 @@ packJPG by Matthias Stirner, 01/2016
 // special realloc with guaranteed free() of previous memory
 static inline void* frealloc( void* ptr, size_t size ) {
 	void* n_ptr = realloc( ptr, (size) ? size : 1 );
-	if ( n_ptr == NULL ) free( ptr );
+	if ( n_ptr == nullptr ) free( ptr );
 	return n_ptr;
 }
 
@@ -549,29 +549,29 @@ INTERN huffCodes      hcodes[2][4];				// huffman codes
 INTERN huffTree       htrees[2][4];				// huffman decoding trees
 INTERN unsigned char  htset[2][4];					// 1 if huffman table is set
 
-INTERN unsigned char* grbgdata		   =   NULL;	// garbage data
-INTERN unsigned char* hdrdata          =   NULL;   // header data
-INTERN unsigned char* huffdata         =   NULL;   // huffman coded data
+INTERN unsigned char* grbgdata		   =   nullptr;	// garbage data
+INTERN unsigned char* hdrdata          =   nullptr;   // header data
+INTERN unsigned char* huffdata         =   nullptr;   // huffman coded data
 INTERN int            hufs             =    0  ;   // size of huffman data
 INTERN int            hdrs             =    0  ;   // size of header
 INTERN int            grbs             =    0  ;   // size of garbage
 
-INTERN unsigned int*  rstp             =   NULL;   // restart markers positions in huffdata
-INTERN unsigned int*  scnp             =   NULL;   // scan start positions in huffdata
+INTERN unsigned int*  rstp             =   nullptr;   // restart markers positions in huffdata
+INTERN unsigned int*  scnp             =   nullptr;   // scan start positions in huffdata
 INTERN int            rstc             =    0  ;   // count of restart markers
 INTERN int            scnc             =    0  ;   // count of scans
 INTERN int            rsti             =    0  ;   // restart interval
 INTERN char           padbit           =    -1 ;   // padbit (for huffman coding)
-INTERN unsigned char* rst_err          =   NULL;   // number of wrong-set RST markers per scan
+INTERN unsigned char* rst_err          =   nullptr;   // number of wrong-set RST markers per scan
 
-INTERN unsigned char* zdstdata[4]      = { NULL }; // zero distribution (# of non-zeroes) lists (for higher 7x7 block)
-INTERN unsigned char* eobxhigh[4]      = { NULL }; // eob in x direction (for higher 7x7 block)
-INTERN unsigned char* eobyhigh[4]      = { NULL }; // eob in y direction (for higher 7x7 block)
-INTERN unsigned char* zdstxlow[4]		= { NULL }; // # of non zeroes for first row
-INTERN unsigned char* zdstylow[4]		= { NULL }; // # of non zeroes for first collumn
-INTERN signed short*  colldata[4][64]  = {{NULL}}; // collection sorted DCT coefficients
+INTERN unsigned char* zdstdata[4]      = { nullptr }; // zero distribution (# of non-zeroes) lists (for higher 7x7 block)
+INTERN unsigned char* eobxhigh[4]      = { nullptr }; // eob in x direction (for higher 7x7 block)
+INTERN unsigned char* eobyhigh[4]      = { nullptr }; // eob in y direction (for higher 7x7 block)
+INTERN unsigned char* zdstxlow[4]		= { nullptr }; // # of non zeroes for first row
+INTERN unsigned char* zdstylow[4]		= { nullptr }; // # of non zeroes for first collumn
+INTERN signed short*  colldata[4][64]  = {{nullptr}}; // collection sorted DCT coefficients
 
-INTERN unsigned char* freqscan[4]      = { NULL }; // optimized order for frequency scans (only pointers to scans)
+INTERN unsigned char* freqscan[4]      = { nullptr }; // optimized order for frequency scans (only pointers to scans)
 INTERN unsigned char  zsrtscan[4][64];				// zero optimized frequency scan
 
 INTERN int adpt_idct_8x8[ 4 ][ 8 * 8 * 8 * 8 ];	// precalculated/adapted values for idct (8x8)
@@ -613,8 +613,8 @@ INTERN int cs_sal       =   0  ; // successive approximation bit pos low
 	global variables: info about files
 	----------------------------------------------- */
 	
-INTERN char*  jpgfilename = NULL;	// name of JPEG file
-INTERN char*  pjgfilename = NULL;	// name of PJG file
+INTERN char*  jpgfilename = nullptr;	// name of JPEG file
+INTERN char*  pjgfilename = nullptr;	// name of PJG file
 INTERN int    jpgfilesize;			// size of JPEG file
 INTERN int    pjgfilesize;			// size of PJG file
 INTERN int    jpegtype = 0;			// type of JPEG coding: 0->unknown, 1->sequential, 2->progressive
@@ -625,12 +625,12 @@ INTERN std::unique_ptr<Writer> str_out;	// output stream
 #if !defined(BUILD_LIB)
 INTERN std::unique_ptr<Reader> str_str;	// storage stream
 
-INTERN char** filelist = NULL;		// list of files to process 
+INTERN char** filelist = nullptr;		// list of files to process 
 INTERN int    file_cnt = 0;			// count of files in list
 INTERN int    file_no  = 0;			// number of current file
 
-INTERN char** err_list = NULL;		// list of error messages 
-INTERN int*   err_tp   = NULL;		// list of error types
+INTERN char** err_list = nullptr;		// list of error messages 
+INTERN int*   err_tp   = nullptr;		// list of error types
 #endif
 
 #if defined(DEV_INFOS)
@@ -773,7 +773,7 @@ int main( int argc, char** argv )
 		if ( errorlevel > 0 ) {
 			err_list[ file_no ] = static_cast<char*>(calloc( MSG_SIZE, sizeof( char ) ));
 			err_tp[ file_no ] = errorlevel;
-			if ( err_list[ file_no ] != NULL )
+			if ( err_list[ file_no ] != nullptr )
 				strcpy( err_list[ file_no ], errormessage );
 		}
 		// count errors / warnings / file sizes
@@ -1168,7 +1168,7 @@ INTERN void initialize_options( int argc, char** argv )
 	// get memory for filelist & preset with NULL
 	filelist = static_cast<char**>(calloc( argc, sizeof( char* ) ));
 	for ( i = 0; i < argc; i++ )
-		filelist[ i ] = NULL;
+		filelist[ i ] = nullptr;
 	
 	// preset temporary filelist pointer
 	tmp_flp = filelist;
@@ -1286,7 +1286,7 @@ INTERN void initialize_options( int argc, char** argv )
 	}
 	
 	// count number of files (or filenames) in filelist
-	for ( file_cnt = 0; filelist[ file_cnt ] != NULL; file_cnt++ );
+	for ( file_cnt = 0; filelist[ file_cnt ] != nullptr; file_cnt++ );
 	
 	// alloc arrays for error messages and types storage
 	err_list = static_cast<char**>(calloc( file_cnt, sizeof( char* ) ));
@@ -1319,13 +1319,13 @@ INTERN void initialize_options( int argc, char** argv )
 INTERN void process_ui( void )
 {
 	clock_t begin, end;
-	const char* actionmsg  = NULL;
-	const char* errtypemsg = NULL;
+	const char* actionmsg  = nullptr;
+	const char* errtypemsg = nullptr;
 	int total, bpms;
 	float cr;	
 	
 	
-	errorfunction = NULL;
+	errorfunction = nullptr;
 	errorlevel = 0;
 	jpgfilesize = 0;
 	pjgfilesize = 0;	
@@ -1475,7 +1475,7 @@ INTERN void process_ui( void )
 #if !defined(BUILD_LIB)
 INTERN inline const char* get_status( bool (*function)() )
 {	
-	if ( function == NULL ) {
+	if ( function == nullptr ) {
 		return "unknown action";
 	} else if ( function == *check_file ) {
 		return "Determining filetype";
@@ -1778,7 +1778,7 @@ INTERN void execute( bool (*function)() )
 		// set endtime
 		end = clock();
 		
-		if ( ( errorlevel > 0 ) && ( errorfunction == NULL ) )
+		if ( ( errorlevel > 0 ) && ( errorfunction == nullptr ) )
 			errorfunction = function;
 		
 		// write time or failure notice
@@ -1859,8 +1859,8 @@ INTERN bool check_file( void )
 				unique_filename( filename, const_cast<char*>(pjg_ext) );
 		}
 		else {
-			jpgfilename = create_filename( "STDIN", NULL );
-			pjgfilename = create_filename( "STDOUT", NULL );
+			jpgfilename = create_filename( "STDIN", nullptr );
+			pjgfilename = create_filename( "STDOUT", nullptr );
 		}
 
 		try {
@@ -1901,8 +1901,8 @@ INTERN bool check_file( void )
 				unique_filename( filename, const_cast<char*>(jpg_ext) );
 		}
 		else {
-			jpgfilename = create_filename( "STDOUT", NULL );
-			pjgfilename = create_filename( "STDIN", NULL );
+			jpgfilename = create_filename( "STDOUT", nullptr );
+			pjgfilename = create_filename( "STDIN", nullptr );
 		}
 		// open output stream, check for errors
         if (pipe_on) {
@@ -2009,36 +2009,36 @@ INTERN bool reset_buffers( void )
 	// -- free buffers --
 	
 	// free buffers & set pointers NULL
-	if ( hdrdata  != NULL ) free ( hdrdata );
-	if ( huffdata != NULL ) free ( huffdata );
-	if ( grbgdata != NULL ) free ( grbgdata );
-	if ( rst_err  != NULL ) free ( rst_err );
-	if ( rstp     != NULL ) free ( rstp );
-	if ( scnp     != NULL ) free ( scnp );
-	hdrdata   = NULL;
-	huffdata  = NULL;
-	grbgdata  = NULL;
-	rst_err   = NULL;
-	rstp      = NULL;
-	scnp      = NULL;
+	if ( hdrdata  != nullptr ) free ( hdrdata );
+	if ( huffdata != nullptr ) free ( huffdata );
+	if ( grbgdata != nullptr ) free ( grbgdata );
+	if ( rst_err  != nullptr ) free ( rst_err );
+	if ( rstp     != nullptr ) free ( rstp );
+	if ( scnp     != nullptr ) free ( scnp );
+	hdrdata   = nullptr;
+	huffdata  = nullptr;
+	grbgdata  = nullptr;
+	rst_err   = nullptr;
+	rstp      = nullptr;
+	scnp      = nullptr;
 	
 	// free image arrays
 	for ( cmp = 0; cmp < 4; cmp++ )	{
-		if ( zdstdata[ cmp ] != NULL ) free( zdstdata[cmp] );
-		if ( eobxhigh[ cmp ] != NULL ) free( eobxhigh[cmp] );
-		if ( eobyhigh[ cmp ] != NULL ) free( eobyhigh[cmp] );
-		if ( zdstxlow[ cmp ] != NULL ) free( zdstxlow[cmp] );
-		if ( zdstylow[ cmp ] != NULL ) free( zdstylow[cmp] );
-		zdstdata[ cmp ] = NULL;
-		eobxhigh[ cmp ] = NULL;
-		eobyhigh[ cmp ] = NULL;
-		zdstxlow[ cmp ] = NULL;
-		zdstylow[ cmp ] = NULL;
+		if ( zdstdata[ cmp ] != nullptr ) free( zdstdata[cmp] );
+		if ( eobxhigh[ cmp ] != nullptr ) free( eobxhigh[cmp] );
+		if ( eobyhigh[ cmp ] != nullptr ) free( eobyhigh[cmp] );
+		if ( zdstxlow[ cmp ] != nullptr ) free( zdstxlow[cmp] );
+		if ( zdstylow[ cmp ] != nullptr ) free( zdstylow[cmp] );
+		zdstdata[ cmp ] = nullptr;
+		eobxhigh[ cmp ] = nullptr;
+		eobyhigh[ cmp ] = nullptr;
+		zdstxlow[ cmp ] = nullptr;
+		zdstylow[ cmp ] = nullptr;
 		freqscan[ cmp ] = (unsigned char*) stdscan;
 		
 		for ( bpos = 0; bpos < 64; bpos++ ) {
-			if ( colldata[ cmp ][ bpos ] != NULL ) free( colldata[cmp][bpos] );
-			colldata[ cmp ][ bpos ] = NULL;
+			if ( colldata[ cmp ][ bpos ] != nullptr ) free( colldata[cmp][bpos] );
+			colldata[ cmp ][ bpos ] = nullptr;
 		}		
 	}
 	
@@ -2058,7 +2058,7 @@ INTERN bool reset_buffers( void )
 		cmpnfo[ cmp ].nc  = -1;
 		cmpnfo[ cmp ].sid = -1;
 		cmpnfo[ cmp ].jid = -1;
-		cmpnfo[ cmp ].qtable = NULL;
+		cmpnfo[ cmp ].qtable = nullptr;
 		cmpnfo[ cmp ].huffdc = -1;
 		cmpnfo[ cmp ].huffac = -1;
 	}
@@ -2101,7 +2101,7 @@ INTERN bool reset_buffers( void )
 	
 INTERN bool read_jpeg( void )
 {
-	unsigned char* segment = NULL; // storage for current segment
+	unsigned char* segment = nullptr; // storage for current segment
 	unsigned int   ssize = 1024; // current size of segment array
 	unsigned char  type = 0x00; // type of current marker segment
 	unsigned int   len  = 0; // length of current marker segment
@@ -2127,7 +2127,7 @@ INTERN bool read_jpeg( void )
 	
 	// alloc memory for segment data first
 	segment = static_cast< unsigned char*>(calloc( ssize, sizeof( char ) ));
-	if ( segment == NULL ) {
+	if ( segment == nullptr ) {
 		sprintf( errormessage, MEM_ERRMSG );
 		errorlevel = 2;
 		return false;
@@ -2171,19 +2171,19 @@ INTERN bool read_jpeg( void )
 					else { // in all other cases leave it to the header parser routines
 						// store number of wrongly set rst markers
 						if ( crst > 0 ) {
-							if ( rst_err == NULL ) {
+							if ( rst_err == nullptr ) {
 								rst_err = static_cast<unsigned char*>(calloc( scnc + 1, sizeof( char ) ));
-								if ( rst_err == NULL ) {
+								if ( rst_err == nullptr ) {
 									sprintf( errormessage, MEM_ERRMSG );
 									errorlevel = 2;
 									return false;
 								}
 							}
 						}
-						if ( rst_err != NULL ) {
+						if ( rst_err != nullptr ) {
 							// realloc and set only if needed
 							rst_err = static_cast< unsigned char*>(frealloc( rst_err, ( scnc + 1 ) * sizeof( char ) ));
-							if ( rst_err == NULL ) {
+							if ( rst_err == nullptr ) {
 								sprintf( errormessage, MEM_ERRMSG );
 								errorlevel = 2;
 								return false;
@@ -2252,7 +2252,7 @@ INTERN bool read_jpeg( void )
 		// realloc segment data if needed
 		if ( ssize < len ) {
 			segment = static_cast< unsigned char*>(frealloc( segment, len ));
-			if ( segment == NULL ) {
+			if ( segment == nullptr ) {
 				sprintf( errormessage, MEM_ERRMSG );
 				errorlevel = 2;
 				delete ( hdrw );
@@ -2368,7 +2368,7 @@ INTERN bool merge_jpeg( void )
 			if ( huffdata[ ipos ] == 0xFF )
 				str_out->write_byte(stv);
 			// insert restart markers if needed
-			if ( rstp != NULL ) {
+			if ( rstp != nullptr ) {
 				if ( ipos == rstp[ rpos ] ) {
 					rst = 0xD0 + ( cpos % 8 );
 					str_out->write_byte(mrk);
@@ -2378,7 +2378,7 @@ INTERN bool merge_jpeg( void )
 			}
 		}
 		// insert false rst markers at end if needed
-		if ( rst_err != NULL ) {
+		if ( rst_err != nullptr ) {
 			while ( rst_err[ scan - 1 ] > 0 ) {
 				rst = 0xD0 + ( cpos % 8 );
 				str_out->write_byte(mrk);
@@ -2827,9 +2827,9 @@ INTERN bool recode_jpeg( void )
 		
 		
 		// (re)alloc scan positons array
-		if ( scnp == NULL ) scnp = static_cast< unsigned int*>(calloc( scnc + 2, sizeof( int ) ));
+		if ( scnp == nullptr ) scnp = static_cast< unsigned int*>(calloc( scnc + 2, sizeof( int ) ));
 		else scnp = static_cast< unsigned int*>(frealloc( scnp, ( scnc + 2 ) * sizeof( int ) ));
-		if ( scnp == NULL ) {
+		if ( scnp == nullptr ) {
 			sprintf( errormessage, MEM_ERRMSG );
 			errorlevel = 2;
 			return false;
@@ -2839,9 +2839,9 @@ INTERN bool recode_jpeg( void )
 		if ( rsti > 0 ) {
 			tmp = rstc + ( ( cs_cmpc > 1 ) ?
 				( mcuc / rsti ) : ( cmpnfo[ cs_cmp[ 0 ] ].bc / rsti ) );
-			if ( rstp == NULL ) rstp = static_cast< unsigned int*>(calloc( tmp + 1, sizeof( int ) ));
+			if ( rstp == nullptr ) rstp = static_cast< unsigned int*>(calloc( tmp + 1, sizeof( int ) ));
 			else rstp = static_cast< unsigned int*>(frealloc( rstp, ( tmp + 1 ) * sizeof( int ) ));
-			if ( rstp == NULL ) {
+			if ( rstp == nullptr ) {
 				sprintf( errormessage, MEM_ERRMSG );
 				errorlevel = 2;
 				return false;
@@ -3080,7 +3080,7 @@ INTERN bool recode_jpeg( void )
 	
 	// store last scan & restart positions
 	scnp[ scnc ] = hufs;
-	if ( rstp != NULL )
+	if ( rstp != nullptr )
 		rstp[ rstc ] = hufs;
 	
 	
@@ -3316,9 +3316,9 @@ INTERN bool pack_pjg( void )
 	// store padbit (padbit can't be retrieved from the header)
 	if ( !pjg_encode_bit( encoder, padbit ) ) return false;	
 	// also encode one bit to signal false/correct use of RST markers
-	if ( !pjg_encode_bit( encoder, ( rst_err == NULL ) ? 0 : 1 ) ) return false;
+	if ( !pjg_encode_bit( encoder, ( rst_err == nullptr ) ? 0 : 1 ) ) return false;
 	// encode # of false set RST markers per scan
-	if ( rst_err != NULL )
+	if ( rst_err != nullptr )
 		if ( !pjg_encode_generic( encoder, rst_err, scnc ) ) return false;
 	
 	// encode actual components data
@@ -3444,7 +3444,7 @@ INTERN bool unpack_pjg( void )
 	if ( !pjg_decode_bit( decoder, &cb ) ) return false;
 	// decode # of false set RST markers per scan only if available
 	if ( cb == 1 )
-		if ( !pjg_decode_generic( decoder, &rst_err, NULL ) ) return false;
+		if ( !pjg_decode_generic( decoder, &rst_err, nullptr ) ) return false;
 	
 	// undo header optimizations
 	if ( !pjg_unoptimize_header() )	return false;	
@@ -3526,7 +3526,7 @@ INTERN bool jpg_setup_imginfo( void )
 	for ( cmp = 0; cmp < cmpc; cmp++ ) {
 		if ( ( cmpnfo[cmp].sfv == 0 ) ||
 			 ( cmpnfo[cmp].sfh == 0 ) ||
-			 ( cmpnfo[cmp].qtable == NULL ) ||
+			 ( cmpnfo[cmp].qtable == nullptr ) ||
 			 ( cmpnfo[cmp].qtable[0] == 0 ) ||
 			 ( jpegtype == 0 ) ) {
 			sprintf( errormessage, "header information is incomplete" );
@@ -3569,7 +3569,7 @@ INTERN bool jpg_setup_imginfo( void )
 		// alloc memory for colls
 		for ( bpos = 0; bpos < 64; bpos++ ) {
 			colldata[cmp][bpos] = static_cast<short int*>(calloc ( cmpnfo[cmp].bc, sizeof( short ) ));
-			if (colldata[cmp][bpos] == NULL) {
+			if (colldata[cmp][bpos] == nullptr) {
 				sprintf( errormessage, MEM_ERRMSG );
 				errorlevel = 2;
 				return false;
@@ -3582,9 +3582,9 @@ INTERN bool jpg_setup_imginfo( void )
 		eobyhigh[cmp] = static_cast<unsigned char*>(calloc( cmpnfo[cmp].bc, sizeof( char ) ));
 		zdstxlow[cmp] = static_cast<unsigned char*>(calloc( cmpnfo[cmp].bc, sizeof( char ) ));
 		zdstylow[cmp] = static_cast<unsigned char*>(calloc( cmpnfo[cmp].bc, sizeof( char ) ));
-		if ( ( zdstdata[cmp] == NULL ) ||
-			( eobxhigh[cmp] == NULL ) || ( eobyhigh[cmp] == NULL ) ||
-			( zdstxlow[cmp] == NULL ) || ( zdstylow[cmp] == NULL ) ) {
+		if ( ( zdstdata[cmp] == nullptr ) ||
+			( eobxhigh[cmp] == nullptr ) || ( eobyhigh[cmp] == nullptr ) ||
+			( zdstxlow[cmp] == nullptr ) || ( zdstylow[cmp] == nullptr ) ) {
 			sprintf( errormessage, MEM_ERRMSG );
 			errorlevel = 2;
 			return false;
@@ -4866,7 +4866,7 @@ INTERN bool pjg_encode_dc( ArithmeticEncoder* enc, int cmp )
 	
 	// allocate memory for absolute values storage
 	absv_store = static_cast<unsigned short*>(calloc ( bc, sizeof( short ) ));
-	if ( absv_store == NULL ) {
+	if ( absv_store == nullptr ) {
 		sprintf( errormessage, MEM_ERRMSG );
 		errorlevel = 2;
 		return false;
@@ -4993,10 +4993,10 @@ INTERN bool pjg_encode_ac_high( ArithmeticEncoder* enc, int cmp )
 	absv_store = static_cast<unsigned short*>(calloc ( bc, sizeof( short ) ));	
 	sgn_store = static_cast<unsigned char*>(calloc ( bc, sizeof( char ) ));
 	zdstls = static_cast<unsigned char*>(calloc ( bc, sizeof( char ) ));
-	if ( ( absv_store == NULL ) || ( sgn_store == NULL ) || ( zdstls == NULL ) ) {
-		if ( absv_store != NULL ) free( absv_store );
-		if ( sgn_store != NULL ) free( sgn_store );
-		if ( zdstls != NULL ) free( zdstls );
+	if ( ( absv_store == nullptr ) || ( sgn_store == nullptr ) || ( zdstls == nullptr ) ) {
+		if ( absv_store != nullptr ) free( absv_store );
+		if ( sgn_store != nullptr ) free( sgn_store );
+		if ( zdstls != nullptr ) free( zdstls );
 		sprintf( errormessage, MEM_ERRMSG );
 		errorlevel = 2;
 		return false;
@@ -5530,7 +5530,7 @@ INTERN bool pjg_decode_dc( ArithmeticDecoder* dec, int cmp )
 	
 	// allocate memory for absolute values storage
 	absv_store = static_cast<unsigned short*>(calloc ( bc, sizeof( short ) ));
-	if ( absv_store == NULL ) {
+	if ( absv_store == nullptr ) {
 		sprintf( errormessage, MEM_ERRMSG );
 		errorlevel = 2;
 		return false;
@@ -5657,10 +5657,10 @@ INTERN bool pjg_decode_ac_high( ArithmeticDecoder* dec, int cmp )
 	absv_store = static_cast<unsigned short*>(calloc ( bc, sizeof( short ) ));	
 	sgn_store = static_cast<unsigned char*>(calloc ( bc, sizeof( char ) ));
 	zdstls = static_cast<unsigned char*>(calloc ( bc, sizeof( char ) ));
-	if ( ( absv_store == NULL ) || ( sgn_store == NULL ) || ( zdstls == NULL ) ) {
-		if ( absv_store != NULL ) free( absv_store );
-		if ( sgn_store != NULL ) free( sgn_store );
-		if ( zdstls != NULL ) free( zdstls );
+	if ( ( absv_store == nullptr ) || ( sgn_store == nullptr ) || ( zdstls == nullptr ) ) {
+		if ( absv_store != nullptr ) free( absv_store );
+		if ( sgn_store != nullptr ) free( sgn_store );
+		if ( zdstls != nullptr ) free( zdstls );
 		sprintf( errormessage, MEM_ERRMSG );
 		errorlevel = 2;
 		return false;
@@ -5977,7 +5977,7 @@ INTERN bool pjg_decode_generic( ArithmeticDecoder* dec, unsigned char** data, in
 	
 	// get data/length and close byte writer
 	(*data) = bwrt->get_c_data();
-	if ( len != NULL ) (*len) = bwrt->num_bytes_written();
+	if ( len != nullptr ) (*len) = bwrt->num_bytes_written();
 	delete bwrt;
 	
 	
@@ -6683,7 +6683,7 @@ INTERN inline void progress_bar( int current, int last )
 #if !defined(BUILD_LIB)
 INTERN inline char* create_filename( const char* base, const char* extension )
 {
-	int len = strlen( base ) + ( ( extension == NULL ) ? 0 : strlen( extension ) + 1 ) + 1;	
+	int len = strlen( base ) + ( ( extension == nullptr ) ? 0 : strlen( extension ) + 1 ) + 1;	
 	char* filename = static_cast<char*>(calloc( len, sizeof( char ) ));	
 	
 	// create a filename from base & extension
@@ -6700,7 +6700,7 @@ INTERN inline char* create_filename( const char* base, const char* extension )
 #if !defined(BUILD_LIB)
 INTERN inline char* unique_filename( const char* base, const char* extension )
 {
-	int len = strlen( base ) + ( ( extension == NULL ) ? 0 : strlen( extension ) + 1 ) + 1;	
+	int len = strlen( base ) + ( ( extension == nullptr ) ? 0 : strlen( extension ) + 1 ) + 1;	
 	char* filename = static_cast<char*>(calloc( len, sizeof( char ) ));	
 	
 	// create a unique filename using underscores
@@ -6725,11 +6725,11 @@ INTERN inline void set_extension( char* filename, const char* extension )
 	char* extstr;
 	
 	// find position of extension in filename	
-	extstr = ( strrchr( filename, '.' ) == NULL ) ?
+	extstr = ( strrchr( filename, '.' ) == nullptr ) ?
 		strrchr( filename, '\0' ) : strrchr( filename, '.' );
 	
 	// set new extension
-	if ( extension != NULL ) {
+	if ( extension != nullptr ) {
 		(*extstr++) = '.';
 		strcpy( extstr, extension );
 	}
@@ -6753,7 +6753,7 @@ INTERN inline void add_underscore( char* filename )
 	extstr = strrchr( filename, '.' );
 	
 	// add underscore before extension
-	if ( extstr != NULL ) {
+	if ( extstr != nullptr ) {
 		(*extstr++) = '_';
 		strcpy( extstr, strrchr( tmpname, '.' ) );
 	}
@@ -6773,7 +6773,7 @@ INTERN inline bool file_exists( const char* filename )
 	// needed for both, executable and library
 	FILE* fp = fopen( filename, "rb" );
 	
-	if ( fp == NULL ) return false;
+	if ( fp == nullptr ) return false;
 	else {
 		fclose( fp );
 		return true;
