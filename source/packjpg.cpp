@@ -381,42 +381,42 @@ struct huffTree {
 	----------------------------------------------- */
 #if !defined(BUILD_LIB)
 INTERN void initialize_options(int argc, char **argv);
-INTERN void process_ui(void);
+INTERN void process_ui();
 INTERN inline const char *get_status(bool (*function)());
-INTERN void show_help(void);
+INTERN void show_help();
 #endif
-INTERN void process_file(void);
+INTERN void process_file();
 INTERN void execute(bool (*function)());
 
 /* -----------------------------------------------
 	function declarations: main functions
 	----------------------------------------------- */
 #if !defined(BUILD_LIB)
-INTERN bool check_file(void);
-INTERN bool swap_streams(void);
-INTERN bool compare_output(void);
+INTERN bool check_file();
+INTERN bool swap_streams();
+INTERN bool compare_output();
 #endif
-INTERN bool reset_buffers(void);
-INTERN bool read_jpeg(void);
-INTERN bool merge_jpeg(void);
-INTERN bool decode_jpeg(void);
-INTERN bool recode_jpeg(void);
-INTERN bool adapt_icos(void);
-INTERN bool predict_dc(void);
-INTERN bool unpredict_dc(void);
-INTERN bool check_value_range(void);
-INTERN bool calc_zdst_lists(void);
-INTERN bool pack_pjg(void);
-INTERN bool unpack_pjg(void);
+INTERN bool reset_buffers();
+INTERN bool read_jpeg();
+INTERN bool merge_jpeg();
+INTERN bool decode_jpeg();
+INTERN bool recode_jpeg();
+INTERN bool adapt_icos();
+INTERN bool predict_dc();
+INTERN bool unpredict_dc();
+INTERN bool check_value_range();
+INTERN bool calc_zdst_lists();
+INTERN bool pack_pjg();
+INTERN bool unpack_pjg();
 
 /* -----------------------------------------------
 	function declarations: jpeg-specific
 	----------------------------------------------- */
 
-INTERN bool jpg_setup_imginfo(void);
+INTERN bool jpg_setup_imginfo();
 INTERN bool jpg_parse_jfif(unsigned char type, unsigned int len,
 			   unsigned char *segment);
-INTERN bool jpg_rebuild_header(void);
+INTERN bool jpg_rebuild_header();
 
 INTERN int jpg_decode_block_seq(BitReader *huffr, huffTree *dctree,
 				huffTree *actree, short *block);
@@ -483,8 +483,8 @@ INTERN bool pjg_decode_generic(ArithmeticDecoder *dec, unsigned char **data,
 INTERN bool pjg_decode_bit(ArithmeticDecoder *dec, unsigned char *bit);
 
 INTERN void pjg_get_zerosort_scan(unsigned char *sv, int cmp);
-INTERN bool pjg_optimize_header(void);
-INTERN bool pjg_unoptimize_header(void);
+INTERN bool pjg_optimize_header();
+INTERN bool pjg_unoptimize_header();
 
 INTERN void pjg_aavrg_prepare(unsigned short **abs_coeffs, int *weights,
 			      unsigned short *abs_store, int cmp);
@@ -1386,7 +1386,7 @@ INTERN void initialize_options(int argc, char **argv)
 	----------------------------------------------- */
 
 #if !defined(BUILD_LIB)
-INTERN void process_ui(void)
+INTERN void process_ui()
 {
 	clock_t begin, end;
 	const char *actionmsg = nullptr;
@@ -1678,7 +1678,7 @@ INTERN inline const char *get_status(bool (*function)())
 	----------------------------------------------- */
 
 #if !defined(BUILD_LIB)
-INTERN void show_help(void)
+INTERN void show_help()
 {
 	fprintf(msgout, "\n");
 	fprintf(msgout, "Website: %s\n", website);
@@ -1730,7 +1730,7 @@ INTERN void show_help(void)
 	processes one file
 	----------------------------------------------- */
 
-INTERN void process_file(void)
+INTERN void process_file()
 {
 	if (filetype == F_JPG) {
 		switch (action) {
@@ -1962,7 +1962,7 @@ INTERN void execute(bool (*function)())
 	----------------------------------------------- */
 
 #if !defined(BUILD_LIB)
-INTERN bool check_file(void)
+INTERN bool check_file()
 {
 	unsigned char fileid[2] = { 0, 0 };
 	const char *filename = filelist[file_no];
@@ -2093,7 +2093,7 @@ INTERN bool check_file(void)
 	----------------------------------------------- */
 
 #if !defined(BUILD_LIB)
-INTERN bool swap_streams(void)
+INTERN bool swap_streams()
 {
 	unsigned char dmp[2];
 
@@ -2117,7 +2117,7 @@ INTERN bool swap_streams(void)
 	----------------------------------------------- */
 
 #if !defined(BUILD_LIB)
-INTERN bool compare_output(void)
+INTERN bool compare_output()
 {
 	if (str_out->error()) {
 		sprintf(errormessage, "error in comparison stream");
@@ -2162,7 +2162,7 @@ INTERN bool compare_output(void)
 	set each variable to its initial value
 	----------------------------------------------- */
 
-INTERN bool reset_buffers(void)
+INTERN bool reset_buffers()
 {
 	int cmp, bpos;
 	int i;
@@ -2282,7 +2282,7 @@ INTERN bool reset_buffers(void)
 	Read in header & image data
 	----------------------------------------------- */
 
-INTERN bool read_jpeg(void)
+INTERN bool read_jpeg()
 {
 	unsigned char *segment = nullptr; // storage for current segment
 	unsigned int ssize = 1024; // current size of segment array
@@ -2530,7 +2530,7 @@ INTERN bool read_jpeg(void)
 	Merges header & image data to jpeg
 	----------------------------------------------- */
 
-INTERN bool merge_jpeg(void)
+INTERN bool merge_jpeg()
 {
 	unsigned char SOI[2] = { 0xFF, 0xD8 }; // SOI segment
 	unsigned char EOI[2] = { 0xFF, 0xD9 }; // EOI segment
@@ -2635,7 +2635,7 @@ INTERN bool merge_jpeg(void)
 	JPEG decoding routine
 	----------------------------------------------- */
 
-INTERN bool decode_jpeg(void)
+INTERN bool decode_jpeg()
 {
 	BitReader *huffr; // bitwise reader for image data
 
@@ -3133,7 +3133,7 @@ INTERN bool decode_jpeg(void)
 	JPEG encoding routine
 	----------------------------------------------- */
 
-INTERN bool recode_jpeg(void)
+INTERN bool recode_jpeg()
 {
 	BitWriter *huffw; // bitwise writer for image data
 
@@ -3564,7 +3564,7 @@ INTERN bool recode_jpeg(void)
 	adapt ICOS tables for quantizer tables
 	----------------------------------------------- */
 
-INTERN bool adapt_icos(void)
+INTERN bool adapt_icos()
 {
 	unsigned short quant[64]; // local copy of quantization
 	int ipos;
@@ -3603,7 +3603,7 @@ INTERN bool adapt_icos(void)
 	filter DC coefficients
 	----------------------------------------------- */
 
-INTERN bool predict_dc(void)
+INTERN bool predict_dc()
 {
 	signed short *coef;
 	int absmaxp;
@@ -3642,7 +3642,7 @@ INTERN bool predict_dc(void)
 	unpredict DC coefficients
 	----------------------------------------------- */
 
-INTERN bool unpredict_dc(void)
+INTERN bool unpredict_dc()
 {
 	signed short *coef;
 	int absmaxp;
@@ -3682,7 +3682,7 @@ INTERN bool unpredict_dc(void)
 	checks range of values, error if out of bounds
 	----------------------------------------------- */
 
-INTERN bool check_value_range(void)
+INTERN bool check_value_range()
 {
 	int absmax;
 	int cmp, bpos, dpos;
@@ -3713,7 +3713,7 @@ INTERN bool check_value_range(void)
 	calculate zero distribution lists
 	----------------------------------------------- */
 
-INTERN bool calc_zdst_lists(void)
+INTERN bool calc_zdst_lists()
 {
 	int cmp, bpos, dpos;
 	int b_x, b_y;
@@ -3756,7 +3756,7 @@ INTERN bool calc_zdst_lists(void)
 	packs all parts to compressed pjg
 	----------------------------------------------- */
 
-INTERN bool pack_pjg(void)
+INTERN bool pack_pjg()
 {
 	unsigned char hcode;
 	int cmp;
@@ -3918,7 +3918,7 @@ INTERN bool pack_pjg(void)
 	unpacks compressed pjg to colldata
 	----------------------------------------------- */
 
-INTERN bool unpack_pjg(void)
+INTERN bool unpack_pjg()
 {
 	unsigned char hcode;
 	unsigned char cb;
@@ -4045,7 +4045,7 @@ INTERN bool unpack_pjg(void)
 /* -----------------------------------------------
 	Parses header for imageinfo
 	----------------------------------------------- */
-INTERN bool jpg_setup_imginfo(void)
+INTERN bool jpg_setup_imginfo()
 {
 	unsigned char type = 0x00; // type of current marker segment
 	unsigned int len = 0; // length of current marker segment
@@ -4505,7 +4505,7 @@ INTERN bool jpg_parse_jfif(unsigned char type, unsigned int len,
 /* -----------------------------------------------
 	JFIF header rebuilding routine
 	----------------------------------------------- */
-INTERN bool jpg_rebuild_header(void)
+INTERN bool jpg_rebuild_header()
 {
 	MemoryWriter *hdrw; // new header writer
 
@@ -6744,7 +6744,7 @@ INTERN void pjg_get_zerosort_scan(unsigned char *sv, int cmp)
 /* -----------------------------------------------
 	optimizes JFIF header for compression
 	----------------------------------------------- */
-INTERN bool pjg_optimize_header(void)
+INTERN bool pjg_optimize_header()
 {
 	unsigned char type = 0x00; // type of current marker segment
 	unsigned int len = 0; // length of current marker segment
@@ -6831,7 +6831,7 @@ INTERN bool pjg_optimize_header(void)
 /* -----------------------------------------------
 	undoes the header optimizations
 	----------------------------------------------- */
-INTERN bool pjg_unoptimize_header(void)
+INTERN bool pjg_unoptimize_header()
 {
 	unsigned char type = 0x00; // type of current marker segment
 	unsigned int len = 0; // length of current marker segment
