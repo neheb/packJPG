@@ -1478,35 +1478,35 @@ INTERN inline const char* get_status( bool (*function)() )
 {	
 	if ( function == nullptr ) {
 		return "unknown action";
-	} else if ( function == *check_file ) {
+	} else if ( function == check_file ) {
 		return "Determining filetype";
-	} else if ( function == *read_jpeg ) {
+	} else if ( function == read_jpeg ) {
 		return "Reading header & image data";
-	} else if ( function == *merge_jpeg ) {
+	} else if ( function == merge_jpeg ) {
 		return "Merging header & image data";
-	} else if ( function == *decode_jpeg ) {
+	} else if ( function == decode_jpeg ) {
 		return "Decompressing JPEG image data";
-	} else if ( function == *recode_jpeg ) {
+	} else if ( function == recode_jpeg ) {
 		return "Recompressing JPEG image data";
-	} else if ( function == *adapt_icos ) {
+	} else if ( function == adapt_icos ) {
 		return "Adapting DCT precalc. tables";
-	} else if ( function == *predict_dc ) {
+	} else if ( function == predict_dc ) {
 		return "Applying prediction to DC";
-	} else if ( function == *unpredict_dc ) {
+	} else if ( function == unpredict_dc ) {
 		return "Removing prediction from DC";
-	} else if ( function == *check_value_range ) {
+	} else if ( function == check_value_range ) {
 		return "Checking values range";
-	} else if ( function == *calc_zdst_lists ) {
+	} else if ( function == calc_zdst_lists ) {
 		return "Calculating zero dist lists";
-	} else if ( function == *pack_pjg ) {
+	} else if ( function == pack_pjg ) {
 		return "Compressing data to PJG";
-	} else if ( function == *unpack_pjg ) {
+	} else if ( function == unpack_pjg ) {
 		return "Uncompressing data from PJG";
-	} else if ( function == *swap_streams ) {
+	} else if ( function == swap_streams ) {
 		return "Swapping input/output streams";
-	} else if ( function == *compare_output ) {
+	} else if ( function == compare_output ) {
 		return "Verifying output stream";
-	} else if ( function == *reset_buffers ) {
+	} else if ( function == reset_buffers ) {
 		return "Resetting program";
 	}
 	#if defined(DEV_BUILD)
