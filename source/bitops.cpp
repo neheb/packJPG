@@ -33,9 +33,7 @@ BitReader::BitReader(unsigned char *array, int size)
 	destructor for BitReader class
 	----------------------------------------------- */
 
-BitReader::~BitReader()
-{
-}
+BitReader::~BitReader() = default;
 
 /* -----------------------------------------------
 	reads n bits from BitReader
@@ -193,9 +191,7 @@ BitWriter::BitWriter(std::uint8_t padbit) : padbit_(padbit)
 {
 }
 
-BitWriter::~BitWriter()
-{
-}
+BitWriter::~BitWriter() = default;
 
 std::uint32_t rbits32(std::uint32_t val, std::size_t n)
 {
@@ -595,16 +591,14 @@ FileReader::FileReader(const std::string &file_path)
 				"FileReader: unable to read bytes from " +
 				file_path);
 		}
-	} else {
-		throw std::runtime_error(
-			"FileReader: unable to open read stream for " +
-			file_path);
 	}
+
+	throw std::runtime_error(
+		"FileReader: unable to open read stream for " +
+		file_path);
 }
 
-FileReader::~FileReader()
-{
-}
+FileReader::~FileReader() = default;
 
 std::size_t FileReader::read(std::uint8_t *to, std::size_t num_to_read)
 {
