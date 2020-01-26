@@ -239,7 +239,7 @@ std::size_t BitWriter::num_bytes_written() const {
 
 unsigned char* Reader::get_c_data() {
     const auto data = this->get_data();
-    auto c_data_copy = (unsigned char*)std::malloc(data.size() * sizeof data[0]);
+    auto c_data_copy = static_cast<unsigned char*>(std::malloc(data.size() * sizeof data[0]));
     if (c_data_copy == nullptr) {
         return nullptr;
     }
@@ -342,7 +342,7 @@ bool MemoryReader::end_of_reader() {
 unsigned char* Writer::get_c_data() {
     try {
         const auto data = this->get_data();
-        auto c_data_copy = (unsigned char*)std::malloc(data.size() * sizeof data[0]);
+        auto c_data_copy = static_cast<unsigned char*>(std::malloc(data.size() * sizeof data[0]));
         if (c_data_copy == nullptr) {
             return nullptr;
         }

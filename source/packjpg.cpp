@@ -771,7 +771,7 @@ int main( int argc, char** argv )
 		process_ui();
 		// store error message and type if any
 		if ( errorlevel > 0 ) {
-			err_list[ file_no ] = (char*) calloc( MSG_SIZE, sizeof( char ) );
+			err_list[ file_no ] = static_cast<char*>(calloc( MSG_SIZE, sizeof( char ) ));
 			err_tp[ file_no ] = errorlevel;
 			if ( err_list[ file_no ] != NULL )
 				strcpy( err_list[ file_no ], errormessage );
@@ -816,7 +816,7 @@ int main( int argc, char** argv )
 	if ( ( file_cnt > error_cnt ) && ( verbosity != 0 ) &&
 	 ( action == A_COMPRESS ) ) {
 		acc_jpgsize /= 1024.0; acc_pjgsize /= 1024.0;
-		total = (double) ( end - begin ) / CLOCKS_PER_SEC; 
+		total = static_cast<double>( end - begin ) / CLOCKS_PER_SEC; 
 		kbps  = ( total > 0 ) ? ( acc_jpgsize / total ) : acc_jpgsize;
 		cr    = ( acc_jpgsize > 0 ) ? ( 100.0 * acc_pjgsize / acc_jpgsize ) : 0;
 		
@@ -1166,7 +1166,7 @@ INTERN void initialize_options( int argc, char** argv )
 	
 	
 	// get memory for filelist & preset with NULL
-	filelist = (char**) calloc( argc, sizeof( char* ) );
+	filelist = static_cast<char**>(calloc( argc, sizeof( char* ) ));
 	for ( i = 0; i < argc; i++ )
 		filelist[ i ] = NULL;
 	
@@ -1289,8 +1289,8 @@ INTERN void initialize_options( int argc, char** argv )
 	for ( file_cnt = 0; filelist[ file_cnt ] != NULL; file_cnt++ );
 	
 	// alloc arrays for error messages and types storage
-	err_list = (char**) calloc( file_cnt, sizeof( char* ) );
-	err_tp   = (int*) calloc( file_cnt, sizeof( int ) );
+	err_list = static_cast<char**>(calloc( file_cnt, sizeof( char* ) ));
+	err_tp   = static_cast<int*>(calloc( file_cnt, sizeof( int ) ));
 	
 	// backup settings - needed to restore original setting later
 	if ( !auto_set ) {
@@ -1399,7 +1399,7 @@ INTERN void process_ui( void )
 	end = clock();	
 	
 	// speed and compression ratio calculation
-	total = (int) ( (double) (( end - begin ) * 1000) / CLOCKS_PER_SEC );
+	total = static_cast<int>( static_cast<double>(( end - begin ) * 1000) / CLOCKS_PER_SEC );
 	bpms  = ( total > 0 ) ? ( jpgfilesize / total ) : jpgfilesize;
 	cr    = ( jpgfilesize > 0 ) ? ( 100.0 * pjgfilesize / jpgfilesize ) : 0;
 
@@ -1783,7 +1783,7 @@ INTERN void execute( bool (*function)() )
 		
 		// write time or failure notice
 		if ( success ) {
-			total = (int) ( (double) (( end - begin ) * 1000) / CLOCKS_PER_SEC );
+			total = static_cast<int>( static_cast<double>(( end - begin ) * 1000) / CLOCKS_PER_SEC );
 			if ( verbosity == 2 ) fprintf( msgout,  "%6ims", ( total >= 0 ) ? total : -1 );
 		}
 		else {
@@ -1852,11 +1852,11 @@ INTERN bool check_file( void )
 		filetype = F_JPG;
 		// create filenames
 		if ( !pipe_on ) {
-			jpgfilename = (char*) calloc( strlen( filename ) + 1, sizeof( char ) );
+			jpgfilename = static_cast<char*>(calloc( strlen( filename ) + 1, sizeof( char ) ));
 			strcpy( jpgfilename, filename );
 			pjgfilename = ( overwrite ) ?
-				create_filename( filename, (char*) pjg_ext ) :
-				unique_filename( filename, (char*) pjg_ext );
+				create_filename( filename, const_cast<char*>(pjg_ext) ) :
+				unique_filename( filename, const_cast<char*>(pjg_ext) );
 		}
 		else {
 			jpgfilename = create_filename( "STDIN", NULL );
@@ -1894,11 +1894,11 @@ INTERN bool check_file( void )
 		filetype = F_PJG;
 		// create filenames
 		if ( !pipe_on ) {
-			pjgfilename = (char*) calloc( strlen( filename ) + 1, sizeof( char ) );
+			pjgfilename = static_cast<char*>(calloc( strlen( filename ) + 1, sizeof( char ) ));
 			strcpy( pjgfilename, filename );
 			jpgfilename = ( overwrite ) ?
-				create_filename( filename, (char*) jpg_ext ) :
-				unique_filename( filename, (char*) jpg_ext );
+				create_filename( filename, const_cast<char*>(jpg_ext) ) :
+				unique_filename( filename, const_cast<char*>(jpg_ext) );
 		}
 		else {
 			jpgfilename = create_filename( "STDOUT", NULL );
@@ -2126,7 +2126,7 @@ INTERN bool read_jpeg( void )
 	hufs  = 0; // size of image data, start with 0
 	
 	// alloc memory for segment data first
-	segment = ( unsigned char* ) calloc( ssize, sizeof( char ) );
+	segment = static_cast< unsigned char*>(calloc( ssize, sizeof( char ) ));
 	if ( segment == NULL ) {
 		sprintf( errormessage, MEM_ERRMSG );
 		errorlevel = 2;
@@ -2172,7 +2172,7 @@ INTERN bool read_jpeg( void )
 						// store number of wrongly set rst markers
 						if ( crst > 0 ) {
 							if ( rst_err == NULL ) {
-								rst_err = (unsigned char*) calloc( scnc + 1, sizeof( char ) );
+								rst_err = static_cast<unsigned char*>(calloc( scnc + 1, sizeof( char ) ));
 								if ( rst_err == NULL ) {
 									sprintf( errormessage, MEM_ERRMSG );
 									errorlevel = 2;
@@ -2182,14 +2182,14 @@ INTERN bool read_jpeg( void )
 						}
 						if ( rst_err != NULL ) {
 							// realloc and set only if needed
-							rst_err = ( unsigned char* ) frealloc( rst_err, ( scnc + 1 ) * sizeof( char ) );
+							rst_err = static_cast< unsigned char*>(frealloc( rst_err, ( scnc + 1 ) * sizeof( char ) ));
 							if ( rst_err == NULL ) {
 								sprintf( errormessage, MEM_ERRMSG );
 								errorlevel = 2;
 								return false;
 							}
 							if ( crst > 255 ) {
-								sprintf( errormessage, "Severe false use of RST markers (%i)", (int) crst );
+								sprintf( errormessage, "Severe false use of RST markers (%i)", static_cast<int>(crst) );
 								errorlevel = 1;
 								crst = 255;
 							}
@@ -2251,7 +2251,7 @@ INTERN bool read_jpeg( void )
 		
 		// realloc segment data if needed
 		if ( ssize < len ) {
-			segment = ( unsigned char* ) frealloc( segment, len );
+			segment = static_cast< unsigned char*>(frealloc( segment, len ));
 			if ( segment == NULL ) {
 				sprintf( errormessage, MEM_ERRMSG );
 				errorlevel = 2;
@@ -2264,7 +2264,7 @@ INTERN bool read_jpeg( void )
 		
 		// read rest of segment, store back in header writer
 		if ( str_in->read( ( segment + 4 ), ( len - 4 ) ) !=
-			( unsigned short ) ( len - 4 ) ) break;
+			static_cast< unsigned short>( len - 4 ) ) break;
 		hdrw->write( segment, len );
 	}
 	// JPEG reader loop end
@@ -2344,7 +2344,7 @@ INTERN bool merge_jpeg( void )
 		
 		// seek till start-of-scan
 		for ( type = 0x00; type != 0xDA; ) {
-			if ( ( int ) hpos >= hdrs ) break;
+			if ( static_cast< int>(hpos) >= hdrs ) break;
 			type = hdrdata[ hpos + 1 ];
 			len = 2 + B_SHORT( hdrdata[ hpos + 2 ], hdrdata[ hpos + 3 ] );
 			hpos += len;
@@ -2447,7 +2447,7 @@ INTERN bool decode_jpeg( void )
 	{
 		// seek till start-of-scan, parse only DHT, DRI and SOS
 		for ( type = 0x00; type != 0xDA; ) {
-			if ( ( int ) hpos >= hdrs ) break;
+			if ( static_cast< int>(hpos) >= hdrs ) break;
 			type = hdrdata[ hpos + 1 ];
 			len = 2 + B_SHORT( hdrdata[ hpos + 2 ], hdrdata[ hpos + 3 ] );
 			if ( ( type == 0xC4 ) || ( type == 0xDA ) || ( type == 0xDD ) ) {
@@ -2807,7 +2807,7 @@ INTERN bool recode_jpeg( void )
 	{
 		// seek till start-of-scan, parse only DHT, DRI and SOS
 		for ( type = 0x00; type != 0xDA; ) {
-			if ( ( int ) hpos >= hdrs ) break;
+			if ( static_cast< int>(hpos) >= hdrs ) break;
 			type = hdrdata[ hpos + 1 ];
 			len = 2 + B_SHORT( hdrdata[ hpos + 2 ], hdrdata[ hpos + 3 ] );
 			if ( ( type == 0xC4 ) || ( type == 0xDA ) || ( type == 0xDD ) ) {
@@ -2827,8 +2827,8 @@ INTERN bool recode_jpeg( void )
 		
 		
 		// (re)alloc scan positons array
-		if ( scnp == NULL ) scnp = ( unsigned int* ) calloc( scnc + 2, sizeof( int ) );
-		else scnp = ( unsigned int* ) frealloc( scnp, ( scnc + 2 ) * sizeof( int ) );
+		if ( scnp == NULL ) scnp = static_cast< unsigned int*>(calloc( scnc + 2, sizeof( int ) ));
+		else scnp = static_cast< unsigned int*>(frealloc( scnp, ( scnc + 2 ) * sizeof( int ) ));
 		if ( scnp == NULL ) {
 			sprintf( errormessage, MEM_ERRMSG );
 			errorlevel = 2;
@@ -2839,8 +2839,8 @@ INTERN bool recode_jpeg( void )
 		if ( rsti > 0 ) {
 			tmp = rstc + ( ( cs_cmpc > 1 ) ?
 				( mcuc / rsti ) : ( cmpnfo[ cs_cmp[ 0 ] ].bc / rsti ) );
-			if ( rstp == NULL ) rstp = ( unsigned int* ) calloc( tmp + 1, sizeof( int ) );
-			else rstp = ( unsigned int* ) frealloc( rstp, ( tmp + 1 ) * sizeof( int ) );
+			if ( rstp == NULL ) rstp = static_cast< unsigned int*>(calloc( tmp + 1, sizeof( int ) ));
+			else rstp = static_cast< unsigned int*>(frealloc( rstp, ( tmp + 1 ) * sizeof( int ) ));
 			if ( rstp == NULL ) {
 				sprintf( errormessage, MEM_ERRMSG );
 				errorlevel = 2;
@@ -3506,7 +3506,7 @@ INTERN bool jpg_setup_imginfo( void )
 	int i;
 	
 	// header parser loop
-	while ( ( int ) hpos < hdrs ) {
+	while ( static_cast< int>(hpos) < hdrs ) {
 		type = hdrdata[ hpos + 1 ];
 		len = 2 + B_SHORT( hdrdata[ hpos + 2 ], hdrdata[ hpos + 3 ] );
 		// do not parse DHT & DRI
@@ -3540,18 +3540,18 @@ INTERN bool jpg_setup_imginfo( void )
 		if ( cmpnfo[ cmp ].sfh > sfhm ) sfhm = cmpnfo[ cmp ].sfh;
 		if ( cmpnfo[ cmp ].sfv > sfvm ) sfvm = cmpnfo[ cmp ].sfv;
 	}
-	mcuv = ( int ) ceil( (float) imgheight / (float) ( 8 * sfhm ) );
-	mcuh = ( int ) ceil( (float) imgwidth  / (float) ( 8 * sfvm ) );
+	mcuv = static_cast< int>(ceil( static_cast<float>(imgheight) / static_cast<float>( 8 * sfhm ) ));
+	mcuh = static_cast< int>(ceil( static_cast<float>(imgwidth)  / static_cast<float>( 8 * sfvm ) ));
 	mcuc  = mcuv * mcuh;
 	for ( cmp = 0; cmp < cmpc; cmp++ ) {
 		cmpnfo[ cmp ].mbs = cmpnfo[ cmp ].sfv * cmpnfo[ cmp ].sfh;		
 		cmpnfo[ cmp ].bcv = mcuv * cmpnfo[ cmp ].sfh;
 		cmpnfo[ cmp ].bch = mcuh * cmpnfo[ cmp ].sfv;
 		cmpnfo[ cmp ].bc  = cmpnfo[ cmp ].bcv * cmpnfo[ cmp ].bch;
-		cmpnfo[ cmp ].ncv = ( int ) ceil( (float) imgheight * 
-							( (float) cmpnfo[ cmp ].sfh / ( 8.0 * sfhm ) ) );
-		cmpnfo[ cmp ].nch = ( int ) ceil( (float) imgwidth * 
-							( (float) cmpnfo[ cmp ].sfv / ( 8.0 * sfvm ) ) );
+		cmpnfo[ cmp ].ncv = static_cast< int>(ceil( static_cast<float>(imgheight) * 
+							( static_cast<float>(cmpnfo[ cmp ].sfh) / ( 8.0 * sfhm ) ) ));
+		cmpnfo[ cmp ].nch = static_cast< int>(ceil( static_cast<float>(imgwidth) * 
+							( static_cast<float>(cmpnfo[ cmp ].sfv) / ( 8.0 * sfvm ) ) ));
 		cmpnfo[ cmp ].nc  = cmpnfo[ cmp ].ncv * cmpnfo[ cmp ].nch;
 	}
 	
@@ -3568,7 +3568,7 @@ INTERN bool jpg_setup_imginfo( void )
 	{
 		// alloc memory for colls
 		for ( bpos = 0; bpos < 64; bpos++ ) {
-			colldata[cmp][bpos] = (short int*) calloc ( cmpnfo[cmp].bc, sizeof( short ) );
+			colldata[cmp][bpos] = static_cast<short int*>(calloc ( cmpnfo[cmp].bc, sizeof( short ) ));
 			if (colldata[cmp][bpos] == NULL) {
 				sprintf( errormessage, MEM_ERRMSG );
 				errorlevel = 2;
@@ -3577,11 +3577,11 @@ INTERN bool jpg_setup_imginfo( void )
 		}
 		
 		// alloc memory for zdstlist / eob x / eob y
-		zdstdata[cmp] = (unsigned char*) calloc( cmpnfo[cmp].bc, sizeof( char ) );
-		eobxhigh[cmp] = (unsigned char*) calloc( cmpnfo[cmp].bc, sizeof( char ) );
-		eobyhigh[cmp] = (unsigned char*) calloc( cmpnfo[cmp].bc, sizeof( char ) );
-		zdstxlow[cmp] = (unsigned char*) calloc( cmpnfo[cmp].bc, sizeof( char ) );
-		zdstylow[cmp] = (unsigned char*) calloc( cmpnfo[cmp].bc, sizeof( char ) );
+		zdstdata[cmp] = static_cast<unsigned char*>(calloc( cmpnfo[cmp].bc, sizeof( char ) ));
+		eobxhigh[cmp] = static_cast<unsigned char*>(calloc( cmpnfo[cmp].bc, sizeof( char ) ));
+		eobyhigh[cmp] = static_cast<unsigned char*>(calloc( cmpnfo[cmp].bc, sizeof( char ) ));
+		zdstxlow[cmp] = static_cast<unsigned char*>(calloc( cmpnfo[cmp].bc, sizeof( char ) ));
+		zdstylow[cmp] = static_cast<unsigned char*>(calloc( cmpnfo[cmp].bc, sizeof( char ) ));
 		if ( ( zdstdata[cmp] == NULL ) ||
 			( eobxhigh[cmp] == NULL ) || ( eobyhigh[cmp] == NULL ) ||
 			( zdstxlow[cmp] == NULL ) || ( zdstylow[cmp] == NULL ) ) {
@@ -3595,7 +3595,7 @@ INTERN bool jpg_setup_imginfo( void )
 	if ( auto_set ) {
 		for ( cmp = 0; cmp < cmpc; cmp++ ) {
 			for ( i = 0;
-				conf_sets[ i ][ cmpnfo[cmp].sid ] > (unsigned int) cmpnfo[ cmp ].bc;
+				conf_sets[ i ][ cmpnfo[cmp].sid ] > static_cast<unsigned int>(cmpnfo[ cmp ].bc);
 				i++ );
 			segm_cnt[ cmp ] = conf_segm[ i ][ cmpnfo[cmp].sid ];
 			nois_trs[ cmp ] = conf_ntrs[ i ][ cmpnfo[cmp].sid ];
@@ -3637,7 +3637,7 @@ INTERN bool jpg_parse_jfif( unsigned char type, unsigned int len, unsigned char*
 				
 				skip = 16;
 				for ( i = 0; i < 16; i++ )		
-					skip += ( int ) segment[ hpos + i ];				
+					skip += static_cast< int>(segment[ hpos + i ]);				
 				hpos += skip;
 			}
 			
@@ -3659,7 +3659,7 @@ INTERN bool jpg_parse_jfif( unsigned char type, unsigned int len, unsigned char*
 				hpos++;				
 				if ( lval == 0 ) { // 8 bit precision
 					for ( i = 0; i < 64; i++ ) {
-						qtables[ rval ][ i ] = ( unsigned short ) segment[ hpos + i ];
+						qtables[ rval ][ i ] = static_cast< unsigned short>(segment[ hpos + i ]);
 						if ( qtables[ rval ][ i ] == 0 ) break;
 					}
 					hpos += 64;
@@ -3912,7 +3912,7 @@ INTERN bool jpg_rebuild_header( void )
 	hdrw = new MemoryWriter();
 	
 	// header parser loop
-	while ( ( int ) hpos < hdrs ) {
+	while ( static_cast< int>(hpos) < hdrs ) {
 		type = hdrdata[ hpos + 1 ];
 		len = 2 + B_SHORT( hdrdata[ hpos + 2 ], hdrdata[ hpos + 3 ] );
 		// discard any unneeded meta info
@@ -3951,7 +3951,7 @@ INTERN int jpg_decode_block_seq( BitReader* huffr, huffTree* dctree, huffTree* a
 	// decode dc
 	hc = jpg_next_huffcode( huffr, dctree );
 	if ( hc < 0 ) return -1; // return error
-	else s = ( unsigned char ) hc;
+	else s = static_cast< unsigned char>(hc);
 	n = huffr->read( s );	
 	block[ 0 ] = DEVLI( s, n );
 	
@@ -3971,7 +3971,7 @@ INTERN int jpg_decode_block_seq( BitReader* huffr, huffTree* dctree, huffTree* a
 				block[ bpos++ ] = 0;
 				z--;
 			}
-			block[ bpos++ ] = ( short ) DEVLI( s, n ); // decode cvli
+			block[ bpos++ ] = static_cast< short>DEVLI( s, n ); // decode cvli
 		}
 		else if ( hc == 0 ) { // EOB
 			eob = bpos;			
@@ -4055,7 +4055,7 @@ INTERN int jpg_decode_dc_prg_fs( BitReader* huffr, huffTree* dctree, short* bloc
 	// decode dc
 	hc = jpg_next_huffcode( huffr, dctree );
 	if ( hc < 0 ) return -1; // return error
-	else s = ( unsigned char ) hc;
+	else s = static_cast< unsigned char>(hc);
 	n = huffr->read( s );	
 	block[ 0 ] = DEVLI( s, n );
 	
@@ -4120,7 +4120,7 @@ INTERN int jpg_decode_ac_prg_fs( BitReader* huffr, huffTree* actree, short* bloc
 				block[ bpos++ ] = 0;
 				z--;
 			}			
-			block[ bpos++ ] = ( short ) DEVLI( s, n ); // decode cvli
+			block[ bpos++ ] = static_cast< short>DEVLI( s, n ); // decode cvli
 		}
 		else { // decode eobrun
 			eob = bpos;
@@ -4603,9 +4603,9 @@ INTERN void jpg_build_huffcodes( unsigned char *clen, unsigned char *cval,	huffC
 	
 	// symbol-value of code is its position in the table
 	for( i = 0; i < 16; i++ ) {
-		for( j = 0; j < (int) clen[ i ]; j++ ) {
-			hc->clen[ (int) cval[k] ] = 1 + i;
-			hc->cval[ (int) cval[k] ] = code;
+		for( j = 0; j < static_cast<int>(clen[ i ]); j++ ) {
+			hc->clen[ static_cast<int>(cval[k]) ] = 1 + i;
+			hc->cval[ static_cast<int>(cval[k]) ] = code;
 			
 			k++;			
 			code++;
@@ -4865,7 +4865,7 @@ INTERN bool pjg_encode_dc( ArithmeticEncoder* enc, int cmp )
 	w = cmpnfo[cmp].bch;
 	
 	// allocate memory for absolute values storage
-	absv_store = (unsigned short*) calloc ( bc, sizeof( short ) );
+	absv_store = static_cast<unsigned short*>(calloc ( bc, sizeof( short ) ));
 	if ( absv_store == NULL ) {
 		sprintf( errormessage, MEM_ERRMSG );
 		errorlevel = 2;
@@ -4990,9 +4990,9 @@ INTERN bool pjg_encode_ac_high( ArithmeticEncoder* enc, int cmp )
 	w = cmpnfo[cmp].bch;
 	
 	// allocate memory for absolute values & signs storage
-	absv_store = (unsigned short*) calloc ( bc, sizeof( short ) );	
-	sgn_store = (unsigned char*) calloc ( bc, sizeof( char ) );
-	zdstls = (unsigned char*) calloc ( bc, sizeof( char ) );
+	absv_store = static_cast<unsigned short*>(calloc ( bc, sizeof( short ) ));	
+	sgn_store = static_cast<unsigned char*>(calloc ( bc, sizeof( char ) ));
+	zdstls = static_cast<unsigned char*>(calloc ( bc, sizeof( char ) ));
 	if ( ( absv_store == NULL ) || ( sgn_store == NULL ) || ( zdstls == NULL ) ) {
 		if ( absv_store != NULL ) free( absv_store );
 		if ( sgn_store != NULL ) free( sgn_store );
@@ -5022,7 +5022,7 @@ INTERN bool pjg_encode_ac_high( ArithmeticEncoder* enc, int cmp )
 	for ( i = 1; i < 64; i++ )
 	{		
 		// work through blocks in order of frequency scan
-		bpos = (int) freqscan[cmp][i];
+		bpos = static_cast<int>(freqscan[cmp][i]);
 		b_x = unzigzag[ bpos ] % 8;
 		b_y = unzigzag[ bpos ] / 8;
 	
@@ -5173,7 +5173,7 @@ INTERN bool pjg_encode_ac_low( ArithmeticEncoder* enc, int cmp )
 		// alternate between first row and first collumn
 		b_x = ( i % 2 == 0 ) ? i / 2 : 0;
 		b_y = ( i % 2 == 1 ) ? i / 2 : 0;
-		bpos = (int) zigzag[ b_x + (8*b_y) ];
+		bpos = static_cast<int>(zigzag[ b_x + (8*b_y) ]);
 		
 		// locally store pointer to band coefficients
 		coeffs = colldata[ cmp ][ bpos ];
@@ -5529,7 +5529,7 @@ INTERN bool pjg_decode_dc( ArithmeticDecoder* dec, int cmp )
 	w = cmpnfo[cmp].bch;
 	
 	// allocate memory for absolute values storage
-	absv_store = (unsigned short*) calloc ( bc, sizeof( short ) );
+	absv_store = static_cast<unsigned short*>(calloc ( bc, sizeof( short ) ));
 	if ( absv_store == NULL ) {
 		sprintf( errormessage, MEM_ERRMSG );
 		errorlevel = 2;
@@ -5654,9 +5654,9 @@ INTERN bool pjg_decode_ac_high( ArithmeticDecoder* dec, int cmp )
 	w = cmpnfo[cmp].bch;
 	
 	// allocate memory for absolute values & signs storage
-	absv_store = (unsigned short*) calloc ( bc, sizeof( short ) );	
-	sgn_store = (unsigned char*) calloc ( bc, sizeof( char ) );
-	zdstls = (unsigned char*) calloc ( bc, sizeof( char ) );
+	absv_store = static_cast<unsigned short*>(calloc ( bc, sizeof( short ) ));	
+	sgn_store = static_cast<unsigned char*>(calloc ( bc, sizeof( char ) ));
+	zdstls = static_cast<unsigned char*>(calloc ( bc, sizeof( char ) ));
 	if ( ( absv_store == NULL ) || ( sgn_store == NULL ) || ( zdstls == NULL ) ) {
 		if ( absv_store != NULL ) free( absv_store );
 		if ( sgn_store != NULL ) free( sgn_store );
@@ -5686,7 +5686,7 @@ INTERN bool pjg_decode_ac_high( ArithmeticDecoder* dec, int cmp )
 	for ( i = 1; i < 64; i++ )
 	{		
 		// work through blocks in order of frequency scan
-		bpos = (int) freqscan[cmp][i];
+		bpos = static_cast<int>(freqscan[cmp][i]);
 		b_x = unzigzag[ bpos ] % 8;
 		b_y = unzigzag[ bpos ] / 8;		
 		
@@ -5837,7 +5837,7 @@ INTERN bool pjg_decode_ac_low( ArithmeticDecoder* dec, int cmp )
 		// alternate between first row and first collumn
 		b_x = ( i % 2 == 0 ) ? i / 2 : 0;
 		b_y = ( i % 2 == 1 ) ? i / 2 : 0;
-		bpos = (int) zigzag[ b_x + (8*b_y) ];
+		bpos = static_cast<int>(zigzag[ b_x + (8*b_y) ]);
 		
 		// locally store pointer to band coefficients
 		coeffs = colldata[ cmp ][ bpos ];
@@ -5962,7 +5962,7 @@ INTERN bool pjg_decode_generic( ArithmeticDecoder* dec, unsigned char** data, in
 	while ( true ) {
 		c = decode_ari( dec, model );
 		if ( c == 256 ) break;
-		bwrt->write_byte( (unsigned char) c );
+		bwrt->write_byte( static_cast<unsigned char>(c) );
 		model->shift_context( c );
 	}
 	delete( model );
@@ -6063,7 +6063,7 @@ INTERN bool pjg_optimize_header( void )
 	
 	// search for DHT (0xFFC4) & DQT (0xFFDB) marker segments	
 	// header parser loop
-	while ( ( int ) hpos < hdrs ) {
+	while ( static_cast< int>(hpos) < hdrs ) {
 		type = hdrdata[ hpos + 1 ];
 		len = 2 + B_SHORT( hdrdata[ hpos + 2 ], hdrdata[ hpos + 3 ] );
 		if ( type == 0xC4 ) { // for DHT
@@ -6093,7 +6093,7 @@ INTERN bool pjg_optimize_header( void )
 								
 				skip = 16;
 				for ( i = 0; i < 16; i++ )		
-					skip += ( int ) hdrdata[ hpos + i ];				
+					skip += static_cast< int>(hdrdata[ hpos + i ]);				
 				hpos += skip;
 			}
 		}
@@ -6142,7 +6142,7 @@ INTERN bool pjg_unoptimize_header( void )
 	
 	// search for DHT (0xFFC4) & DQT (0xFFDB) marker segments	
 	// header parser loop
-	while ( ( int ) hpos < hdrs ) {
+	while ( static_cast< int>(hpos) < hdrs ) {
 		type = hdrdata[ hpos + 1 ];
 		len = 2 + B_SHORT( hdrdata[ hpos + 2 ], hdrdata[ hpos + 3 ] );
 		
@@ -6162,7 +6162,7 @@ INTERN bool pjg_unoptimize_header( void )
 								
 				skip = 16;
 				for ( i = 0; i < 16; i++ )		
-					skip += ( int ) hdrdata[ hpos + i ];				
+					skip += static_cast< int>(hdrdata[ hpos + i ]);				
 				hpos += skip;
 			}
 		}
@@ -6684,7 +6684,7 @@ INTERN inline void progress_bar( int current, int last )
 INTERN inline char* create_filename( const char* base, const char* extension )
 {
 	int len = strlen( base ) + ( ( extension == NULL ) ? 0 : strlen( extension ) + 1 ) + 1;	
-	char* filename = (char*) calloc( len, sizeof( char ) );	
+	char* filename = static_cast<char*>(calloc( len, sizeof( char ) ));	
 	
 	// create a filename from base & extension
 	strcpy( filename, base );
@@ -6701,14 +6701,14 @@ INTERN inline char* create_filename( const char* base, const char* extension )
 INTERN inline char* unique_filename( const char* base, const char* extension )
 {
 	int len = strlen( base ) + ( ( extension == NULL ) ? 0 : strlen( extension ) + 1 ) + 1;	
-	char* filename = (char*) calloc( len, sizeof( char ) );	
+	char* filename = static_cast<char*>(calloc( len, sizeof( char ) ));	
 	
 	// create a unique filename using underscores
 	strcpy( filename, base );
 	set_extension( filename, extension );
 	while ( file_exists( filename ) ) {
 		len += sizeof( char );
-		filename = (char*) realloc( filename, len );
+		filename = static_cast<char*>(realloc( filename, len ));
 		add_underscore( filename );
 	}
 	
@@ -6744,7 +6744,7 @@ INTERN inline void set_extension( char* filename, const char* extension )
 #if !defined(BUILD_LIB)
 INTERN inline void add_underscore( char* filename )
 {
-	char* tmpname = (char*) calloc( strlen( filename ) + 1, sizeof( char ) );
+	char* tmpname = static_cast<char*>(calloc( strlen( filename ) + 1, sizeof( char ) ));
 	char* extstr;
 	
 	// copy filename to tmpname
