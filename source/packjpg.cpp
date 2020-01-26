@@ -269,6 +269,7 @@ ____________________________________
 packJPG by Matthias Stirner, 01/2016
 */
 
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -3540,8 +3541,8 @@ INTERN bool jpg_setup_imginfo( void )
 		if ( cmpnfo[ cmp ].sfh > sfhm ) sfhm = cmpnfo[ cmp ].sfh;
 		if ( cmpnfo[ cmp ].sfv > sfvm ) sfvm = cmpnfo[ cmp ].sfv;
 	}
-	mcuv = static_cast< int>(ceil( static_cast<float>(imgheight) / static_cast<float>( 8 * sfhm ) ));
-	mcuh = static_cast< int>(ceil( static_cast<float>(imgwidth)  / static_cast<float>( 8 * sfvm ) ));
+	mcuv = static_cast< int>(std::ceil( static_cast<float>(imgheight) / static_cast<float>( 8 * sfhm ) ));
+	mcuh = static_cast< int>(std::ceil( static_cast<float>(imgwidth)  / static_cast<float>( 8 * sfvm ) ));
 	mcuc  = mcuv * mcuh;
 	for ( cmp = 0; cmp < cmpc; cmp++ ) {
 		cmpnfo[ cmp ].mbs = cmpnfo[ cmp ].sfv * cmpnfo[ cmp ].sfh;		
