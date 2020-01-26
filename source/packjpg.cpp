@@ -811,8 +811,9 @@ int main(int argc, char **argv)
 			err_list[file_no] = static_cast<char *>(
 				calloc(MSG_SIZE, sizeof(char)));
 			err_tp[file_no] = errorlevel;
-			if (err_list[file_no] != nullptr)
+			if (err_list[file_no] != nullptr) {
 				strcpy(err_list[file_no], errormessage);
+			}
 		}
 		// count errors / warnings / file sizes
 		if (errorlevel >= err_tol)
@@ -1580,59 +1581,79 @@ INTERN inline const char *get_status(bool (*function)())
 {
 	if (function == nullptr) {
 		return "unknown action";
-	} else if (function == check_file) {
+	}
+	if (function == check_file) {
 		return "Determining filetype";
-	} else if (function == read_jpeg) {
+	}
+	if (function == read_jpeg) {
 		return "Reading header & image data";
-	} else if (function == merge_jpeg) {
+	}
+	if (function == merge_jpeg) {
 		return "Merging header & image data";
-	} else if (function == decode_jpeg) {
+	}
+	if (function == decode_jpeg) {
 		return "Decompressing JPEG image data";
-	} else if (function == recode_jpeg) {
+	}
+	if (function == recode_jpeg) {
 		return "Recompressing JPEG image data";
-	} else if (function == adapt_icos) {
+	}
+	if (function == adapt_icos) {
 		return "Adapting DCT precalc. tables";
-	} else if (function == predict_dc) {
+	}
+	if (function == predict_dc) {
 		return "Applying prediction to DC";
-	} else if (function == unpredict_dc) {
+	}
+	if (function == unpredict_dc) {
 		return "Removing prediction from DC";
-	} else if (function == check_value_range) {
+	}
+	if (function == check_value_range) {
 		return "Checking values range";
-	} else if (function == calc_zdst_lists) {
+	}
+	if (function == calc_zdst_lists) {
 		return "Calculating zero dist lists";
-	} else if (function == pack_pjg) {
+	}
+	if (function == pack_pjg) {
 		return "Compressing data to PJG";
-	} else if (function == unpack_pjg) {
+	}
+	if (function == unpack_pjg) {
 		return "Uncompressing data from PJG";
-	} else if (function == swap_streams) {
+	}
+	if (function == swap_streams) {
 		return "Swapping input/output streams";
-	} else if (function == compare_output) {
+	}
+	if (function == compare_output) {
 		return "Verifying output stream";
-	} else if (function == reset_buffers) {
+	}
+	if (function == reset_buffers) {
 		return "Resetting program";
 	}
 #if defined(DEV_BUILD)
-	else if (function == *dump_hdr) {
+	if (function == *dump_hdr) {
 		return "Writing header data to file";
-	} else if (function == *dump_huf) {
+	}
+	if (function == *dump_huf) {
 		return "Writing huffman data to file";
-	} else if (function == *dump_coll) {
+	}
+	if (function == *dump_coll) {
 		return "Writing collections to files";
-	} else if (function == *dump_zdst) {
+	}
+	if (function == *dump_zdst) {
 		return "Writing zdist lists to files";
-	} else if (function == *dump_errfile) {
+	}
+	if (function == *dump_errfile) {
 		return "Writing error info to file";
-	} else if (function == *dump_info) {
+	}
+	if (function == *dump_info) {
 		return "Writing info to files";
-	} else if (function == *dump_dist) {
+	}
+	if (function == *dump_dist) {
 		return "Writing distributions to files";
-	} else if (function == *dump_pgm) {
+	}
+	if (function == *dump_pgm) {
 		return "Writing converted image to pgm";
 	}
 #endif
-	else {
-		return "Function description missing!";
-	}
+	return "Function description missing!";
 }
 #endif
 
@@ -2081,11 +2102,13 @@ INTERN bool compare_output(void)
 		sprintf(errormessage, "error in comparison stream");
 		errorlevel = 2;
 		return false;
-	} else if (str_in->error()) {
+	}
+	if (str_in->error()) {
 		sprintf(errormessage, "error in output stream");
 		errorlevel = 2;
 		return false;
-	} else if (str_str->error()) {
+	}
+	if (str_str->error()) {
 		sprintf(errormessage, "error in input stream");
 		errorlevel = 2;
 		return false;
@@ -3011,7 +3034,8 @@ INTERN bool decode_jpeg(void)
 				delete huffr;
 				errorlevel = 2;
 				return false;
-			} else if (sta == 2) { // status 2/3 means done
+			}
+			if (sta == 2) { // status 2/3 means done
 				scnc++; // increment scan counter
 				break; // leave decoding loop, everything is done here
 			}
@@ -3423,10 +3447,14 @@ INTERN bool recode_jpeg(void)
 				delete huffw;
 				errorlevel = 2;
 				return false;
-			} else if (sta == 2) { // status 2 means done
+			}
+
+			if (sta == 2) { // status 2 means done
 				scnc++; // increment scan counter
 				break; // leave decoding loop, everything is done here
-			} else if (sta == 1) { // status 1 means restart
+			}
+
+			if (sta == 1) { // status 1 means restart
 				if (rsti > 0) // store rstp & stay in the loop
 					rstp[rstc++] =
 						huffw->num_bytes_written() - 1;
@@ -3796,15 +3824,15 @@ INTERN bool unpack_pjg(void)
 					appname, hcode / 10, hcode % 10);
 				errorlevel = 2;
 				return false;
-			} else
-				break;
-		} else {
-			sprintf(errormessage,
-				"unknown header code, use newer version of %s",
-				appname);
-			errorlevel = 2;
-			return false;
+			}
+			break;
 		}
+
+		sprintf(errormessage,
+			"unknown header code, use newer version of %s",
+			appname);
+		errorlevel = 2;
+		return false;
 	}
 
 	// init arithmetic compression
@@ -4381,8 +4409,8 @@ INTERN int jpg_decode_block_seq(BitReader *huffr, huffTree *dctree,
 	hc = jpg_next_huffcode(huffr, dctree);
 	if (hc < 0)
 		return -1; // return error
-	else
-		s = static_cast<unsigned char>(hc);
+
+	s = static_cast<unsigned char>(hc);
 	n = huffr->read(s);
 	block[0] = DEVLI(s, n);
 
@@ -4480,8 +4508,8 @@ INTERN int jpg_decode_dc_prg_fs(BitReader *huffr, huffTree *dctree,
 	hc = jpg_next_huffcode(huffr, dctree);
 	if (hc < 0)
 		return -1; // return error
-	else
-		s = static_cast<unsigned char>(hc);
+
+	s = static_cast<unsigned char>(hc);
 	n = huffr->read(s);
 	block[0] = DEVLI(s, n);
 
@@ -4606,9 +4634,8 @@ INTERN int jpg_encode_ac_prg_fs(BitWriter *huffw, huffCodes *actbl,
 		if ((*eobrun) == actbl->max_eobrun)
 			jpg_encode_eobrun(huffw, actbl, eobrun);
 		return 1 + to - z;
-	} else {
-		return 1 + to;
 	}
+	return 1 + to;
 }
 
 /* -----------------------------------------------
@@ -4940,7 +4967,7 @@ INTERN int jpg_next_mcuposn(const int *cmp, int *dpos, int *rstw)
 	// check position
 	if ((*dpos) >= cmpnfo[(*cmp)].bc)
 		return 2;
-	else if (rsti > 0)
+	if (rsti > 0)
 		if (--(*rstw) == 0)
 			return 1;
 
@@ -4958,8 +4985,8 @@ INTERN int jpg_skip_eobrun(const int *cmp, int *dpos, int *rstw, int *eobrun)
 		if (rsti > 0) {
 			if ((*eobrun) > (*rstw))
 				return -1;
-			else
-				(*rstw) -= (*eobrun);
+
+			(*rstw) -= (*eobrun);
 		}
 
 		// fix for non interleaved mcu - horizontal
@@ -4987,9 +5014,9 @@ INTERN int jpg_skip_eobrun(const int *cmp, int *dpos, int *rstw, int *eobrun)
 		// check position
 		if ((*dpos) == cmpnfo[(*cmp)].bc)
 			return 2;
-		else if ((*dpos) > cmpnfo[(*cmp)].bc)
+		if ((*dpos) > cmpnfo[(*cmp)].bc)
 			return -1;
-		else if (rsti > 0)
+		if (rsti > 0)
 			if ((*rstw) == 0)
 				return 1;
 	}
@@ -7103,8 +7130,8 @@ INTERN inline float median_float(float *values, int size)
 	// return median
 	if ((size % 2) == 0) {
 		return (values[middle] + values[middle - 1]) / 2.0;
-	} else
-		return (values[middle]);
+	}
+	return (values[middle]);
 }
 
 /* ----------------------- End of prediction functions -------------------------- */
@@ -7234,10 +7261,9 @@ INTERN inline bool file_exists(const char *filename)
 
 	if (fp == nullptr)
 		return false;
-	else {
-		fclose(fp);
-		return true;
-	}
+
+	fclose(fp);
+	return true;
 }
 
 /* ----------------------- End of miscellaneous helper functions -------------------------- */

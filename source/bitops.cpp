@@ -103,11 +103,11 @@ unsigned char BitReader::unpad(unsigned char fillbit)
 {
 	if ((cbit == 8) || eof()) {
 		return fillbit;
-	} else {
-		fillbit = read(1);
-		while (cbit != 8) {
-			read(1);
-		}
+	}
+
+	fillbit = read(1);
+	while (cbit != 8) {
+		read(1);
 	}
 
 	return fillbit;
@@ -323,22 +323,22 @@ std::uint8_t MemoryReader::read_byte()
 {
 	if (end_of_reader()) {
 		throw std::runtime_error("No bytes left to read");
-	} else {
-		std::uint8_t the_byte = *cbyte_;
-		++cbyte_;
-		return the_byte;
 	}
+
+	std::uint8_t the_byte = *cbyte_;
+	++cbyte_;
+	return the_byte;
 }
 
 bool MemoryReader::read_byte(std::uint8_t *byte)
 {
-	if (end_of_reader()) {
-		return false;
-	} else {
+	if (!end_of_reader()) {
 		*byte = *cbyte_;
 		++cbyte_;
 		return true;
 	}
+
+	return false;
 }
 
 void MemoryReader::skip(std::size_t n)
@@ -499,14 +499,14 @@ std::vector<std::uint8_t> FileWriter::get_data()
 		is.seekg(0);
 		if (is.read(reinterpret_cast<char *>(data_copy.data()), size)) {
 			return data_copy;
-		} else {
-			throw std::runtime_error(
-				"FileWriter::get_data: unable to read bytes from file.");
 		}
-	} else {
+
 		throw std::runtime_error(
-			"FileWriter::get_data: unable to open read stream for file.");
+			"FileWriter::get_data: unable to read bytes from file.");
 	}
+
+	throw std::runtime_error(
+		"FileWriter::get_data: unable to open read stream for file.");
 }
 
 void FileWriter::reset()

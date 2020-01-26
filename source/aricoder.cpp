@@ -644,8 +644,9 @@ void model_b::shift_context(int c)
 {
 	// shifting is not possible if max_order is below 1
 	// or context index is negative
-	if ((max_order < 2) || (c < 0))
+	if ((max_order < 2) || (c < 0)) {
 		return;
+	}
 
 	// shift each orders' context
 	for (int i = max_order; i > 1; i--) {
@@ -734,9 +735,9 @@ int model_b::convert_symbol_to_int(uint32_t count, symbol *s)
 		s->low_count = uint32_t(0);
 		s->high_count = counts0;
 		return 0;
-	} else {
-		s->low_count = counts0;
-		s->high_count = s->scale;
-		return 1;
 	}
+
+	s->low_count = counts0;
+	s->high_count = s->scale;
+	return 1;
 }
