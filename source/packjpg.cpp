@@ -311,22 +311,22 @@ packJPG by Matthias Stirner, 01/2016
 		 0)
 // #define QUN_V(v,cm,bp)	( ( QUANT(cm,bp) > 0 ) ? ( ( v > 0 ) ? ( v + (QUANT(cm,bp)/2) ) /  QUANT(cm,bp) : ( v - (QUANT(cm,bp)/2) ) /  QUANT(cm,bp) ) : 0 )
 
-#define ENVLI(s, v) ((v > 0) ? v : (v - 1) + (1 << s))
-#define DEVLI(s, n) ((n >= (1 << (s - 1))) ? n : n + 1 - (1 << s))
-#define E_ENVLI(s, v) (v - (1 << s))
-#define E_DEVLI(s, n) (n + (1 << s))
+#define ENVLI(s, v) (((v) > 0) ? (v) : ((v) - 1) + (1 << (s)))
+#define DEVLI(s, n) (((n) >= (1 << ((s) - 1))) ? (n) : (n) + 1 - (1 << (s)))
+#define E_ENVLI(s, v) ((v) - (1 << (s)))
+#define E_DEVLI(s, n) ((n) + (1 << (s)))
 
-#define ABS(v1) ((v1 < 0) ? -v1 : v1)
-#define ABSDIFF(v1, v2) ((v1 > v2) ? (v1 - v2) : (v2 - v1))
-#define IPOS(w, v, h) ((v * w) + h)
-#define NPOS(n1, n2, p) (((p / n1) * n2) + (p % n1))
-#define ROUND_F(v1) ((v1 < 0) ? (int)(v1 - 0.5) : (int)(v1 + 0.5))
+#define ABS(v1) (((v1) < 0) ? -(v1) : (v1))
+#define ABSDIFF(v1, v2) (((v1) > (v2)) ? ((v1) - (v2)) : ((v2) - (v1)))
+#define IPOS(w, v, h) (((v) * (w)) + (h))
+#define NPOS(n1, n2, p) ((((p) / (n1)) * (n2)) + ((p) % (n1)))
+#define ROUND_F(v1) (((v1) < 0) ? (int)((v1) - 0.5) : (int)((v1) + 0.5))
 #define DIV_INT(v1, v2)                                                        \
-	((v1 < 0) ? (v1 - (v2 >> 1)) / v2 : (v1 + (v2 >> 1)) / v2)
-#define B_SHORT(v1, v2) ((((int)v1) << 8) + ((int)v2))
+	(((v1) < 0) ? ((v1) - ((v2) >> 1)) / (v2) : ((v1) + ((v2) >> 1)) / (v2))
+#define B_SHORT(v1, v2) ((((int)(v1)) << 8) + ((int)(v2)))
 #define BITLEN1024P(v) (pbitlen_0_1024[v])
 #define BITLEN2048N(v) ((pbitlen_n2048_2047 + 2048)[v])
-#define CLAMPED(l, h, v) ((v < l) ? l : (v > h) ? h : v)
+#define CLAMPED(l, h, v) (((v) < (l)) ? (l) : ((v) > (h)) ? (h) : (v))
 
 #define MEM_ERRMSG "out of memory error"
 #define FRD_ERRMSG "could not read file / file not found: %s"
@@ -1347,7 +1347,7 @@ INTERN void initialize_options(int argc, char **argv)
 			// switch standard message out stream
 			msgout = stderr;
 			// use "-" as placeholder for stdin
-			*(tmp_flp++) = (char *)"-";
+			*(tmp_flp++) = const_cast<char *>("-");
 		} else {
 			// if argument is not switch, it's a filename
 			*(tmp_flp++) = *argv;
@@ -1405,7 +1405,7 @@ INTERN void process_ui()
 	// compare file name, set pipe if needed
 	if ((strcmp(filelist[file_no], "-") == 0) && (action == A_COMPRESS)) {
 		pipe_on = true;
-		filelist[file_no] = (char *)"STDIN";
+		filelist[file_no] = const_cast<char *>("STDIN");
 	} else {
 		pipe_on = false;
 	}
@@ -2217,7 +2217,7 @@ INTERN bool reset_buffers()
 		eobyhigh[cmp] = nullptr;
 		zdstxlow[cmp] = nullptr;
 		zdstylow[cmp] = nullptr;
-		freqscan[cmp] = (unsigned char *)stdscan;
+		freqscan[cmp] = const_cast<unsigned char *>(stdscan);
 
 		for (bpos = 0; bpos < 64; bpos++) {
 			if (colldata[cmp][bpos] != nullptr) {
